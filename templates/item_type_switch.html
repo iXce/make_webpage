@@ -1,0 +1,9 @@
+{% if item.type == "image" %}
+    <img src="{{ item.url }}"{% if item.alt %} alt="{{ item.alt }}"{% endif %} />
+{% elif item.type == "video" %}
+    <video></video>
+{% elif item.type == "subpage" %}
+    <a href="{{ item.url }}">Subpage</a>
+{% else %}
+    {{ item }}
+{% endif %}

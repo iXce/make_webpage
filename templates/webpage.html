@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% if params.title %}{{ params.title }}{% else %}Visualization webpage{% endif %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="static/css/wswebpage.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    {% if params.title %}
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">{{ params.title }}</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="container-fluid">
+
+      {% if params.description %}
+      <p>{{ params.description }}</p>
+      {% endif %}
+
+    <div class="row-fluid">
+        <table>
+        {% for item0 in items %}
+            <tr>
+            {% if item0 is sequence %}
+                {% for item in item0 %}
+                <td>{% include "item_template.html" %}</td>
+                {% endfor %}
+            {% else %}
+                {% set item = item0 %}
+                <td>{% include "item_template.html" %}</td>
+            {% endif %}
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
+

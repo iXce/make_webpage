@@ -6,16 +6,19 @@ import shutil
 import simplejson
 from jinja2 import Template, Environment, FileSystemLoader
 
-DEBUG = True
+DEBUG = False
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+WEB_ROOT = "/meleze/data0/public_html"
+WEB_URL = "http://www-roc.inria.fr/cluster-willow"
 
 def prepare_output(target_dir):
     """Copy static stuff (bootstrap, stylesheet, javascript)"""
     if not os.path.isdir(target_dir):
         os.makedirs(target_dir)
-    bootstrap_dir = os.path.join(target_dir, "bootstrap")
-    if not os.path.isdir(bootstrap_dir):
-        shutil.copytree(os.path.join(THIS_DIR, "bootstrap"), bootstrap_dir)
+    static_dir = os.path.join(target_dir, "static")
+    if DEBUG or not os.path.isdir(static_dir):
+        if DEBUG: shutil.rmtree(static_dir)
+        shutil.copytree(os.path.join(THIS_DIR, "static"), static_dir)
 
 def process_image(item, copy, target_dir):
     if type(item) in (str,unicode) and os.path.exists(item):
@@ -24,7 +27,7 @@ def process_image(item, copy, target_dir):
             new_path = os.path.join(target_dir, "imgs", new_name)
             if not DEBUG: shutil.copy(item, new_path)
             # FIXME: add heuristic to get a better type (e.g. handle videos)
-            return {"type": "image", "url": os.path.join("imgs", new_path)}
+            return {"type": "image", "url": os.path.join("imgs", new_name)}
         else:
             return {"type": "image", "url": item.replace(target_dir, "")}
     elif isinstance(item, dict) and "image" in item:
@@ -73,11 +76,13 @@ def find_subpages(items, basename, level = 0):
     return items, subpages
 
 def make_page(page, params):
-    print >> sys.stderr, "Rendering", page.path
-    env = Environment(loader = FileSystemLoader(os.path.join(THIS_DIR, "templates")))
+    print >> sys.stderr, "Rendering", page.path,
+    env = Environment(loader = FileSystemLoader(os.path.join(THIS_DIR, "templates")),
+                      trim_blocks = True)
     template = env.get_template('webpage.html')
     target_path = os.path.join(params['target_dir'], page.path)
     open(target_path, "w").write(template.render({"params": params, "items": page}))
+    print >> sys.stderr, target_path.replace(WEB_ROOT, WEB_URL)
 
 def processitems(items, params):
     items = process_images(items, params['copy_images'], params['target_dir'])
