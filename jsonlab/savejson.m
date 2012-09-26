@@ -136,6 +136,9 @@ if(~iscell(item))
         error('input is not a cell');
 end
 
+if ndims(item) > 1 && length(item) ~= numel(item)
+    item = ndcell2cellnd(item);
+end
 dim=size(item);
 len=numel(item); % let's handle 1D cell first
 padding1=repmat(sprintf('\t'),1,level-1);
