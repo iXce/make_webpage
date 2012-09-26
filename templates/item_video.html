@@ -1,0 +1,8 @@
+    <video controls>
+        {% if item.mime == "video/webm" %}
+        <source src="{{ item.url }}" type='video/webm; codecs="vp8"' />
+        {% else %}
+        <source src="{{ item.url }}" type='video/mp4' />
+        {% endif %}
+        Your browser does not support the HTML5 video element. D'oh !
+    </video>

@@ -4,6 +4,7 @@ import sys, os
 import shutil
 
 import simplejson
+import mimetypes
 from jinja2 import Template, Environment, FileSystemLoader
 
 DEBUG = False
@@ -20,16 +21,46 @@ def prepare_output(target_dir):
         if DEBUG: shutil.rmtree(static_dir)
         shutil.copytree(os.path.join(THIS_DIR, "static"), static_dir)
 
+def get_mimetype(fname):
+    mimetype, _ = mimetypes.guess_type(fname)
+    if not mimetype and os.path.splitext(fname)[1] == "webm":
+        mimetype ="video/webm"
+    return mimetype
+
+def get_file_type_by_mime(fname):
+    mimetype = get_mimetype(fname)
+    if not mimetype:
+        return None
+    category = mimetype.split("/")
+    if category in ("image", "video"):
+        return category
+    else:
+        return None
+
+def get_file_type_by_ext(fname):
+    ext = os.path.splitext(fname)[1]
+    if ext in ("webm",):
+        return "video"
+    else:
+        return "file"
+
+def get_file_type(fname):
+    ftype = get_file_type_by_mime(fname)
+    if not ftype:
+        return get_file_type_by_ext(fname)
+
 def process_image(item, copy, target_dir):
     if type(item) in (str,unicode) and os.path.exists(item):
+        ftype = get_file_type(item)
+        newitem = {"type": get_file_type(item), "mime": get_mimetype(item)}
         if copy:
             new_name = item.replace(os.sep, "_")
             new_path = os.path.join(target_dir, "imgs", new_name)
             if not DEBUG: shutil.copy(item, new_path)
-            # FIXME: add heuristic to get a better type (e.g. handle videos)
-            return {"type": "image", "url": os.path.join("imgs", new_name)}
+            newitem["url"] = os.path.join("imgs", new_name)
         else:
-            return {"type": "image", "url": item.replace(target_dir, "")}
+            newitem["url"] = item.replace(target_dir, "")
+        return newitem
     elif isinstance(item, dict) and "image" in item:
         item["image"] = process_image(item["image"], copy, target_dir)
         return item

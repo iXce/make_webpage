@@ -1,7 +1,7 @@
 {% if item.type == "image" %}
-    <img src="{{ item.url }}"{% if item.alt %} alt="{{ item.alt }}"{% endif %} />
+    <img src="{{ item.url }}"{% if item.title %} alt="{{ item.title }}"{% endif %} />
 {% elif item.type == "video" %}
-    <video></video>
+    {% include "item_video.html" %}
 {% elif item.type == "subpage" %}
     <a href="{{ item.url }}">Subpage</a>
 {% else %}
