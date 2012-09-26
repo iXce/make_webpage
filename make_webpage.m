@@ -16,11 +16,10 @@ function make_webpage(items, target, copy_images, page_title, page_description)
 
     %%
     % Make output directory and matrix image output directory
-    if isdir(target)
+    [target_dir, target_name, target_ext] = fileparts(target);
+    if isempty(target_ext) % no extension : this is a directory path
         target_dir = target;
         target = fullfile(target_dir, 'index.html');
-    else
-        [target_dir, ~, ~] = fileparts(target);
     end
     out_dir = fullfile(target_dir, 'imgs', 'tmp');
     unix(sprintf('mkdir -p "%s"', out_dir));
