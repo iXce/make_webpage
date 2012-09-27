@@ -31,7 +31,7 @@ def get_file_type_by_mime(fname):
     mimetype = get_mimetype(fname)
     if not mimetype:
         return None
-    category = mimetype.split("/")
+    category = mimetype.split("/")[0]
     if category in ("image", "video"):
         return category
     else:
@@ -48,10 +48,11 @@ def get_file_type(fname):
     ftype = get_file_type_by_mime(fname)
     if not ftype:
         return get_file_type_by_ext(fname)
+    else:
+        return ftype
 
 def process_image(item, copy, target_dir):
     if type(item) in (str,unicode) and os.path.exists(item):
-        ftype = get_file_type(item)
         newitem = {"type": get_file_type(item), "mime": get_mimetype(item)}
         if copy:
             new_name = item.replace(os.sep, "_")
