@@ -1,5 +1,6 @@
 import os
 import simplejson
+import gzip
 
 def flatten_singletons(l):
     first = l[0]
@@ -28,8 +29,12 @@ def process_heatmap(item, target_dir):
     if not os.path.exists(jsonpath):
         os.makedirs(jsonpath)
     json = simplejson.dumps(data)
-    open(os.path.join(jsonpath, heatmap_json), "w").write(json.replace(" ", ""))
+    json = json.replace(" ", "")
+    open(os.path.join(jsonpath, heatmap_json), "w").write(json)
+    gzip.open(os.path.join(jsonpath, heatmap_json + ".gz"), "w").write(json.replace(" ", ""))
     del item["data"]
-    item["url"] = os.path.join("json", heatmap_json)
+    # FIXME: dirty hack for gzipped jsons
+    #item["url"] = os.path.join("json", heatmap_json)
+    item["url"] = os.path.join("static", "php", "servejson.php?json=" + heatmap_json)
     return item
 process_heatmap.heatmap_id = 1
