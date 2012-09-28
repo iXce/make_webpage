@@ -3,7 +3,7 @@
 from optparse import OptionParser
 import sys, os
 
-from jsontohtml import make_webpage
+from jsontohtml import WebpageMaker
 
 if __name__ == "__main__":
     parser = OptionParser(usage = "usage: %prog [options] target.html")
@@ -35,4 +35,5 @@ if __name__ == "__main__":
     items = []
     for line in sys.stdin:
         items.append(line.strip().split())
-    make_webpage({"items": items, "params": params})
+    maker = WebpageMaker({"items": items, "params": params})
+    maker.make()
