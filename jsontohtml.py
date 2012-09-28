@@ -108,34 +108,48 @@ dict, and possibly copy the file to the target directory"""
             ALL_TYPES[items[i]["type"]] = True
     return items
 
-class L(list):
-    pass
+class Page(object):
+    items = None
+    parent = None
+    path = ""
+    title = ""
+    description = ""
 
-def make_subpage(item, level, basename):
+    def __init__(self, path, parent):
+        self.path = path
+        self.parent = parent
+
+    def _get_breadcrumbs(self):
+        if self.parent:
+            return self.parent.breadcrumbs + [self]
+        else:
+            return [self]
+    breadcrumbs = property(_get_breadcrumbs)
+
+def make_subpage(item, level, basename, parent):
     suffix = make_subpage.cur_suffix
     make_subpage.cur_suffix += 1
-    subpage, extra_subpages = find_subpages(item, basename, level + 1)
-    subpage = L(subpage)
-    subpage.path = "%s.%08d.html" % (basename, suffix)
+    subpage = Page("%s.%08d.html" % (basename, suffix), parent)
+    subpage.items, extra_subpages = find_subpages(item, basename, level + 1, subpage)
     item = {"type": "subpage", "url": subpage.path}
     return item, subpage, extra_subpages
 make_subpage.cur_suffix = 1
 
-def find_subpages(items, basename, level = 0):
+def find_subpages(items, basename, level, parent):
     subpages = []
     for i in xrange(len(items)):
         item = items[i]
         if isinstance(item, dict) and "subpage" in item:
-            item["subpage"], subpage, extra_subpages = make_subpage(item["subpage"], level, basename)
+            item["subpage"], subpage, extra_subpages = make_subpage(item["subpage"], level, basename, parent)
             if "subpage_title" in item: subpage.title = item["subpage_title"]
             if "subpage_description" in item: subpage.description = item["subpage_description"]
             subpages.extend([subpage] + extra_subpages)
         elif isinstance(item, list):
             if level > 0 and level % 2 == 0: # level is even, we have a subpage
-                item, subpage, extra_subpages = make_subpage(item, level, basename)
+                item, subpage, extra_subpages = make_subpage(item, level, basename, parent)
                 subpages.extend([subpage] + extra_subpages)
             else: # level is odd, not a subpage, just recurse
-                item, extra_subpages = find_subpages(item, basename, level + 1)
+                item, extra_subpages = find_subpages(item, basename, level + 1, parent)
                 subpages.extend(extra_subpages)
         items[i] = item
     return items, subpages
@@ -155,9 +169,8 @@ def make_page(page, params):
 def preprocess(items, params):
     items = process_items(items, params['copy_images'], params['target_dir'])
     basename = os.path.basename(params['target'])
-    mainpage, subpages = find_subpages(items, basename)
-    mainpage = L(mainpage)
-    mainpage.path = basename
+    mainpage = Page(basename, None)
+    mainpage.items, subpages = find_subpages(items, basename, 0, mainpage)
     mainpage.title = params["title"]
     mainpage.description = params["description"]
     pages = [mainpage] + subpages

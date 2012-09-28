@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>{% if page.title %}{{ page.title }}{% else %}Visualization webpage{% endif %}</title>
+    <title>{% if page.title %}{{ page.title }}{% else %}Visualization webpage{% endif %}{% if page.parent and params.title %} / {{ params.title }}{% endif %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -38,7 +38,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="{{ params.target_url }}">{{ page.title }}</a>
+          <a class="brand" href="{{ params.target_url }}">{% if page.parent and params.title %}{{ params.title }} : {% endif %}{{ page.title }}</a>
         </div>
       </div>
     </div>
@@ -46,13 +46,25 @@
 
     <div class="container-fluid">
 
+{% if page.parent %}
+    <ul class="breadcrumb">
+{% for breadcrumb in page.breadcrumbs %}
+{% if not loop.last %}
+        <li><a href="{{ breadcrumb.path }}">{% if breadcrumb.title %}{{ breadcrumb.title }}{% else %}{{ breadcrumb.path }}{% endif %}</a><span class="divider">/</span></li>
+{% else %}
+        <li class="active">{% if breadcrumb.title %}{{ breadcrumb.title }}{% else %}{{ breadcrumb.path }}{% endif %}</li>
+{% endif %}
+{% endfor %}
+    </ul>
+{% endif %}
+
       {% if page.description %}
       <p>{{ page.description }}</p>
       {% endif %}
 
     <div class="row-fluid">
         <table>
-        {% for item0 in page %}
+        {% for item0 in page.items %}
             <tr>
             {% if item0 is sequence and not item0 is string and not item0 is mapping %}
                 {% for item in item0 %}
@@ -93,7 +105,7 @@
         $('img').jail({offset:800,placeholder:'static/img/blank.gif'});
 {% endif %}
         {% do 'plotid'|inc(0, None, True) %}
-        {% for item0 in page %}
+        {% for item0 in page.items %}
             {% if item0 is sequence and not item0 is string and not item0 is mapping %}
                 {% for item in item0 %}
                 {% include "script_type_switch.html" %}
