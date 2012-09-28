@@ -8,9 +8,15 @@ Currently supported objects
 - Images, as either MATLAB matrices or on-disk paths
 - Videos, as on-disk paths
 - Text
-- Comment fields
+- Heatmaps
+- Comment fields (interactive)
 - Line plots
 - Subpages
+
+Planned features
+================
+- Stacked items (several items on top of each other, with one label per item,
+  switching between items is done through a combobox or a list of buttons)
 
 How to define objects
 =====================
@@ -26,8 +32,13 @@ Just a struct with .type = 'comment'
 
 Plots
 -----
-Struct with .type = 'plot', .xdata = 1d or 2d matrix of values (2d if multiple plots),
-same for .ydata
+Struct with .type = 'plot', .xdata = 1d or 2d matrix of values (2d if multiple
+plots), same for .ydata
+
+Heatmap
+-------
+Struct with .type = 'heatmap', .data = yourdatamatrix. Produces a nice colored
+heatmap with value-at-cursor-position tooltips.
 
 Subpages
 --------
