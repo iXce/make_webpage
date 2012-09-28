@@ -8,9 +8,9 @@ from jinja2 import Template, Environment, FileSystemLoader
 from jinjafilters import inc_filter
 from getimageinfo import getImageInfo
 from utils import get_file_type, get_mimetype
-from items import sanitize_plot
+from items import sanitize_plot, process_heatmap
 
-DEBUG = False
+DEBUG = True
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 WEB_ROOT = "/meleze/data0/public_html"
 WEB_URL = "http://www-roc.inria.fr/cluster-willow"
@@ -55,7 +55,7 @@ class WebpageMaker(object):
             os.makedirs(target_dir)
         static_dir = os.path.join(target_dir, "static")
         if DEBUG or not os.path.isdir(static_dir):
-            if DEBUG: shutil.rmtree(static_dir)
+            if DEBUG and os.path.exists(static_dir): shutil.rmtree(static_dir)
             shutil.copytree(os.path.join(THIS_DIR, "static"), static_dir)
 
     def process_item(self, item):
@@ -76,15 +76,20 @@ class WebpageMaker(object):
             else:
                 newitem["url"] = item.replace(self.params["target_dir"], "")
             return newitem
-        elif isinstance(item, dict) and "type" in item and item["type"] in ("image", "video"):
-            processed = self.process_item(item["url"])
-            if isinstance(processed, dict):
-                item.update(processed)
+        elif isinstance(item, dict) and "type" in item:
+            if item["type"] in ("image", "video"):
+                processed = self.process_item(item["url"])
+                if isinstance(processed, dict):
+                    item.update(processed)
+                else:
+                    item["url"] = processed
+                return item
+            elif item["type"] == "plot":
+                return sanitize_plot(item)
+            elif item["type"] == "heatmap":
+                return process_heatmap(item, self.params["target_dir"])
             else:
-                item["url"] = processed
-            return item
-        elif isinstance(item, dict) and "type" in item and item["type"] == "plot":
-            return sanitize_plot(item)
+                return item
         elif isinstance(item, list):
             return self.process_items(item)
         else:

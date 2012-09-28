@@ -17,3 +17,22 @@
 .plotholder a {
     text-decoration: none;
 }
+.heatmap-tooltip {
+  position: absolute;
+  display: block;
+  width: 40px;
+  height: 25px;
+  z-index: 999; 
+}
+.heatmap-tooltipFill {
+  position: absolute;
+  display: block;
+}
+.heatmap-tooltipFill p {
+  position: absolute;
+  display: block;
+  text-align: center;
+  background-color: #fff;
+  padding: 3px 10px 3px 10px;
+}
+.

@@ -90,6 +90,10 @@
 {% if types.image %}
     <script src="static/js/jail.min.js"></script>
 {% endif %}
+{% if types.heatmap %}
+    <script src="static/js/d3.v2.min.js"></script>
+    <script src="static/js/heatmap.js"></script>
+{% endif %}
 {% if types.comment %}
     <script src="static/js/remotecomment.js"></script>
 {% endif %}
@@ -105,6 +109,7 @@
         $('img').jail({offset:800,placeholder:'static/img/blank.gif'});
 {% endif %}
 {% do 'plotid'|inc(0, None, True) %}
+{% do 'heatmapid'|inc(0, None, True) %}
 {% for item0 in page.items %}
 {% if item0 is sequence and not item0 is string and not item0 is mapping %}
 {% for item in item0 %}

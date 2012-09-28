@@ -1,4 +1,4 @@
 - Plots axis are sometimes totally wrong : fix it
 - Improve template
-- Add breadcrumbs
-- Add image stacks handling
+- Add stacks handling (of images, of heatmaps...)
+- Improve colormap for heatmaps
