@@ -2,3 +2,4 @@
 - Improve template
 - Add breadcrumbs
 - Check if the code working on item["image"] is really useful, or needs fixing
+- Add image stacks handling
