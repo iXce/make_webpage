@@ -20,8 +20,8 @@ function heatmap_maker(selector, width, height, min, max) {
 
     var colormap = ["#0a0", "#6c0", "#ee0", "#eb4", "#eb9", "#fff"];
     var domain = [];
-    for (i = 0; i < 6; i++) {
-        domain[i] = min + i * (max - min) / 6;
+    for (i = 0; i < colormap.length; i++) {
+        domain[i] = min + i * (max - min) / colormap.length;
     }
     var color = d3.scale.linear()
         .domain(domain)

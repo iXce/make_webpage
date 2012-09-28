@@ -23,6 +23,7 @@ def process_heatmap(item, target_dir):
     item["height"] = 0
     item["min"] = min([min(k) for k in data])
     item["max"] = max([max(k) for k in data])
+    # Precompute image ?
     heatmap_json = "%08d.json" % process_heatmap.heatmap_id
     process_heatmap.heatmap_id += 1
     jsonpath = os.path.join(target_dir, "json")
