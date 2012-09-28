@@ -4,109 +4,16 @@ import sys, os
 import shutil
 
 import simplejson
-import mimetypes
 from jinja2 import Template, Environment, FileSystemLoader
 from jinjafilters import inc_filter
 from getimageinfo import getImageInfo
+from utils import get_file_type, get_mimetype
+from items import sanitize_plot
 
 DEBUG = True
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 WEB_ROOT = "/meleze/data0/public_html"
 WEB_URL = "http://www-roc.inria.fr/cluster-willow"
-
-def prepare_output(target_dir):
-    """Copy static stuff (bootstrap, stylesheet, javascript)"""
-    if not os.path.isdir(target_dir):
-        os.makedirs(target_dir)
-    static_dir = os.path.join(target_dir, "static")
-    if DEBUG or not os.path.isdir(static_dir):
-        if DEBUG: shutil.rmtree(static_dir)
-        shutil.copytree(os.path.join(THIS_DIR, "static"), static_dir)
-
-def get_mimetype(fname):
-    mimetype, _ = mimetypes.guess_type(fname)
-    if not mimetype and os.path.splitext(fname)[1] == "webm":
-        mimetype ="video/webm"
-    return mimetype
-
-def get_file_type_by_mime(fname):
-    mimetype = get_mimetype(fname)
-    if not mimetype:
-        return None
-    category = mimetype.split("/")[0]
-    if category in ("image", "video"):
-        return category
-    else:
-        return None
-
-def get_file_type_by_ext(fname):
-    ext = os.path.splitext(fname)[1]
-    if ext in ("webm",):
-        return "video"
-    else:
-        return "file"
-
-def get_file_type(fname):
-    ftype = get_file_type_by_mime(fname)
-    if not ftype:
-        return get_file_type_by_ext(fname)
-    else:
-        return ftype
-
-def flatten_singletons(l):
-    first = l[0]
-    if isinstance(first, list) and len(first) == 1:
-        return [v[0] for v in l]
-    else:
-        return [flatten_singletons(v) for v in l]
-
-def sanitize_plot(item):
-    item["xdata"] = flatten_singletons(item["xdata"])
-    item["ydata"] = flatten_singletons(item["ydata"])
-    return item
-
-def process_item(item, copy, target_dir):
-    if isinstance(item, dict) and "subpage" in item:
-        item["subpage"] = process_item(item["subpage"], copy, target_dir)
-    if type(item) in (str,unicode) and os.path.exists(item):
-        newitem = {"type": get_file_type(item), "mime": get_mimetype(item)}
-        if newitem["type"] == "image":
-            content_type, width, height = getImageInfo(open(item).read())
-            if content_type and width and height:
-                newitem["width"] = width
-                newitem["height"] = height
-        if copy:
-            new_name = item.replace(os.sep, "_")
-            new_path = os.path.join(target_dir, "imgs", new_name)
-            if not DEBUG: shutil.copy(item, new_path)
-            newitem["url"] = os.path.join("imgs", new_name)
-        else:
-            newitem["url"] = item.replace(target_dir, "")
-        return newitem
-    elif isinstance(item, dict) and "type" in item and item["type"] in ("image", "video"):
-        processed = process_item(item["url"], copy, target_dir)
-        if isinstance(processed, dict):
-            item.update(processed)
-        else:
-            item["url"] = processed
-        return item
-    elif isinstance(item, dict) and "type" in item and item["type"] == "plot":
-        return sanitize_plot(item)
-    elif isinstance(item, list):
-        return process_items(item, copy, target_dir)
-    else:
-        return item
-
-ALL_TYPES = {}
-
-def process_items(items, copy, target_dir):
-    """Replace any valid path found in the tree by {type:image,url:valid_url}
-dict, and possibly copy the file to the target directory"""
-    for i in xrange(len(items)):
-        items[i] = process_item(items[i], copy, target_dir)
-        if isinstance(items[i], dict) and "type" in items[i]:
-            ALL_TYPES[items[i]["type"]] = True
-    return items
 
 class Page(object):
     items = None
@@ -126,65 +33,124 @@ class Page(object):
             return [self]
     breadcrumbs = property(_get_breadcrumbs)
 
-def make_subpage(item, level, basename, parent):
-    suffix = make_subpage.cur_suffix
-    make_subpage.cur_suffix += 1
-    subpage = Page("%s.%08d.html" % (basename, suffix), parent)
-    subpage.items, extra_subpages = find_subpages(item, basename, level + 1, subpage)
-    item = {"type": "subpage", "url": subpage.path}
-    return item, subpage, extra_subpages
-make_subpage.cur_suffix = 1
+class WebpageMaker(object):
+    params = None
+    items = None
+    item_types = {}
+    cur_subpage_suffix = 1
 
-def find_subpages(items, basename, level, parent):
-    subpages = []
-    for i in xrange(len(items)):
-        item = items[i]
+    def __init__(self, data):
+        params = data['params']
+        params['target_url'] = params['target'].replace(WEB_ROOT, WEB_URL)
+        params['copy_images'] = bool(params['copy_images'])
+        self.params = params
+        self.items = data['items']
+
+    def prepare_output(self):
+        """Copy static stuff (bootstrap, stylesheet, javascript)"""
+        target_dir = self.params["target_dir"]
+        if not os.path.isdir(target_dir):
+            os.makedirs(target_dir)
+        static_dir = os.path.join(target_dir, "static")
+        if DEBUG or not os.path.isdir(static_dir):
+            if DEBUG: shutil.rmtree(static_dir)
+            shutil.copytree(os.path.join(THIS_DIR, "static"), static_dir)
+
+    def process_item(self, item):
         if isinstance(item, dict) and "subpage" in item:
-            item["subpage"], subpage, extra_subpages = make_subpage(item["subpage"], level, basename, parent)
-            if "subpage_title" in item: subpage.title = item["subpage_title"]
-            if "subpage_description" in item: subpage.description = item["subpage_description"]
-            subpages.extend([subpage] + extra_subpages)
+            item["subpage"] = self.process_item(item["subpage"])
+        if type(item) in (str,unicode) and os.path.exists(item):
+            newitem = {"type": get_file_type(item), "mime": get_mimetype(item)}
+            if newitem["type"] == "image":
+                content_type, width, height = getImageInfo(open(item).read())
+                if content_type and width and height:
+                    newitem["width"] = width
+                    newitem["height"] = height
+            if self.params["copy_images"]:
+                new_name = item.replace(os.sep, "_")
+                new_path = os.path.join(self.params["target_dir"], "imgs", new_name)
+                if not DEBUG: shutil.copy(item, new_path)
+                newitem["url"] = os.path.join("imgs", new_name)
+            else:
+                newitem["url"] = item.replace(self.params["target_dir"], "")
+            return newitem
+        elif isinstance(item, dict) and "type" in item and item["type"] in ("image", "video"):
+            processed = self.process_item(item["url"])
+            if isinstance(processed, dict):
+                item.update(processed)
+            else:
+                item["url"] = processed
+            return item
+        elif isinstance(item, dict) and "type" in item and item["type"] == "plot":
+            return sanitize_plot(item)
         elif isinstance(item, list):
-            if level > 0 and level % 2 == 0: # level is even, we have a subpage
-                item, subpage, extra_subpages = make_subpage(item, level, basename, parent)
+            return self.process_items(item)
+        else:
+            return item
+
+    def process_items(self, items):
+        """Replace any valid path found in the tree by {type:image,url:valid_url}
+dict, and possibly copy the file to the target directory"""
+        for i in xrange(len(items)):
+            items[i] = self.process_item(items[i])
+            if isinstance(items[i], dict) and "type" in items[i]:
+                self.item_types[items[i]["type"]] = True
+        return items
+
+    def make_subpage(self, item, level, basename, parent):
+        suffix = self.cur_subpage_suffix
+        self.cur_subpage_suffix += 1
+        subpage = Page("%s.%08d.html" % (basename, suffix), parent)
+        subpage.items, extra_subpages = self.find_subpages(item, basename, level + 1, subpage)
+        item = {"type": "subpage", "url": subpage.path}
+        return item, subpage, extra_subpages
+
+    def find_subpages(self, items, basename, level, parent):
+        subpages = []
+        for i in xrange(len(items)):
+            item = items[i]
+            if isinstance(item, dict) and "subpage" in item:
+                item["subpage"], subpage, extra_subpages = self.make_subpage(item["subpage"], level, basename, parent)
+                if "subpage_title" in item: subpage.title = item["subpage_title"]
+                if "subpage_description" in item: subpage.description = item["subpage_description"]
                 subpages.extend([subpage] + extra_subpages)
-            else: # level is odd, not a subpage, just recurse
-                item, extra_subpages = find_subpages(item, basename, level + 1, parent)
-                subpages.extend(extra_subpages)
-        items[i] = item
-    return items, subpages
+            elif isinstance(item, list):
+                if level > 0 and level % 2 == 0: # level is even, we have a subpage
+                    item, subpage, extra_subpages = self.make_subpage(item, level, basename, parent)
+                    subpages.extend([subpage] + extra_subpages)
+                else: # level is odd, not a subpage, just recurse
+                    item, extra_subpages = self.find_subpages(item, basename, level + 1, parent)
+                    subpages.extend(extra_subpages)
+            items[i] = item
+        return items, subpages
 
-def make_page(page, params):
-    print >> sys.stderr, "Rendering", page.path,
-    env = Environment(loader = FileSystemLoader(os.path.join(THIS_DIR, "templates")),
-                      extensions = ['jinja2.ext.with_', 'jinja2.ext.do'],
-                      trim_blocks = True)
-    env.filters['inc'] = inc_filter
-    template = env.get_template('webpage.html')
-    target_path = os.path.join(params['target_dir'], page.path)
-    context = {"params": params, "page": page, "types": ALL_TYPES}
-    open(target_path, "w").write(template.render(context))
-    print >> sys.stderr, target_path.replace(WEB_ROOT, WEB_URL)
+    def make_page(self, page):
+        print >> sys.stderr, "Rendering", page.path,
+        env = Environment(loader = FileSystemLoader(os.path.join(THIS_DIR, "templates")),
+                          extensions = ['jinja2.ext.with_', 'jinja2.ext.do'],
+                          trim_blocks = True)
+        env.filters['inc'] = inc_filter
+        template = env.get_template('webpage.html')
+        target_path = os.path.join(self.params['target_dir'], page.path)
+        context = {"params": self.params, "page": page, "types": self.item_types}
+        open(target_path, "w").write(template.render(context))
+        print >> sys.stderr, target_path.replace(WEB_ROOT, WEB_URL)
 
-def preprocess(items, params):
-    items = process_items(items, params['copy_images'], params['target_dir'])
-    basename = os.path.basename(params['target'])
-    mainpage = Page(basename, None)
-    mainpage.items, subpages = find_subpages(items, basename, 0, mainpage)
-    mainpage.title = params["title"]
-    mainpage.description = params["description"]
-    pages = [mainpage] + subpages
-    return pages
+    def preprocess(self):
+        items = self.process_items(self.items)
+        basename = os.path.basename(self.params['target'])
+        mainpage = Page(basename, None)
+        mainpage.items, subpages = self.find_subpages(items, basename, 0, mainpage)
+        mainpage.title = self.params["title"]
+        mainpage.description = self.params["description"]
+        pages = [mainpage] + subpages
+        return pages
 
-def make_webpage(data):
-    params = data['params']
-    target_dir = params['target_dir']
-    params['target_url'] = params['target'].replace(WEB_ROOT, WEB_URL)
-    prepare_output(target_dir)
-    params['copy_images'] = bool(params['copy_images'])
-    pages = preprocess(data['items'], params)
-    for page in pages:
-        make_page(page, params)
+    def make(self):
+        self.prepare_output()
+        self.pages = self.preprocess()
+        for page in self.pages:
+            self.make_page(page)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -195,4 +161,5 @@ if __name__ == "__main__":
         print >> sys.stderr, "Missing json : %s" % jsonfile
         sys.exit(1)
     jsondata = simplejson.load(open(jsonfile))
-    make_webpage(jsondata)
+    maker = WebpageMaker(jsondata)
+    maker.make()
