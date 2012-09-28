@@ -1,9 +1,13 @@
 {% if item.type == "image" %}
-    <img src="{{ item.url }}"{% if item.title %} alt="{{ item.title }}"{% endif %} />
+    {% include "item_image.html" %}
 {% elif item.type == "video" %}
     {% include "item_video.html" %}
+{% elif item.type == "comment" %}
+    {% include "item_comment.html" %}
+{% elif item.type == "plot" %}
+    {% include "item_plot.html" %}
 {% elif item.type == "subpage" %}
-    <a href="{{ item.url }}">Subpage</a>
+    <a href="{{ item.url }}"{% if item.attrs %} {{ item.attrs }}{% endif %}>Subpage</a>
 {% else %}
-    {{ item }}
+    <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item }}</span>
 {% endif %}

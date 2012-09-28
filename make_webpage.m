@@ -39,6 +39,7 @@ function make_webpage(items, target, copy_images, page_title, page_description)
     webpage.items = items;
     savejson('', webpage, 'FileName', out_json, 'ForceRootName', 0);
     pypath = fullfile(curdir, 'jsontohtml.py');
+    disp(sprintf('Running python %s %s', pypath, out_json));
     [ret, ~] = python(pypath, out_json);
     disp(ret);
 end

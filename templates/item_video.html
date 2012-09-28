@@ -1,4 +1,4 @@
-    <video controls>
+    <video controls{% if item.attrs %} {{ item.attrs }}{% endif %}>
         {% if item.mime == "video/webm" %}
         <source src="{{ item.url }}" type='video/webm; codecs="vp8"' />
         {% else %}

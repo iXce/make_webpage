@@ -1,0 +1,8 @@
+{% if not item.width or not item.height %}
+<img src="{{ item.url }}"{% if item.title %} title="{{ item.title }}"{% endif %}{% if item.attrs %} {{ item.attrs }}{% endif %} />
+{% else %}
+<img data-src="{{ item.url }}" width="{{ item.width }}" height="{{ item.height }}" {% if item.title %} title="{{ item.title }}"{% endif %}{% if item.attrs %} {{ item.attrs }}{% endif %} />
+<noscript>
+    <img src="{{ item.url }}"{% if item.title %} title="{{ item.title }}"{% endif %}{% if item.attrs %} {{ item.attrs }}{% endif %} />
+</noscript>
+{% endif %}

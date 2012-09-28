@@ -1,0 +1,19 @@
+.comment {
+    width: 100%;
+    margin-bottom: 5px;
+}
+.comment .textareaholder {
+    margin-right: 14px;
+    margin-bottom: 2px;
+}
+.comment textarea {
+    min-width: 200px;
+    width: 100%;
+}
+.plotholder {
+    width: 400px;
+    height: 200px;
+}
+.plotholder a {
+    text-decoration: none;
+}

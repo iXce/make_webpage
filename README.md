@@ -15,3 +15,6 @@ Dependencies (shipped in this package)
 - Simplejson for python json handling https://github.com/simplejson/simplejson
 - JSONlab for MATLAB json handling http://iso2mesh.sourceforge.net/cgi-bin/index.cgi?jsonlab
 - Twitter Bootstrap for layout goodness http://twitter.github.com/bootstrap/
+- jQuery for javascript handling http://jquery.com/
+- Raphael/gRaphael for plots http://raphaeljs.com/ and http://g.raphaeljs.com/
+- JAIL for lazy loading http://www.sebastianoarmelibattana.com/projects/jail
