@@ -727,34 +727,52 @@ Raphael.g = {
             dpower = Math.log(t - f) / Math.log(10);
         if (dpower < 0 && fpower < dpower) {
             // delta is less than 1, f is smaller than delta, round to 0
-            f = 0;
+            from = f = 0;
             dpower = Math.log(t - f) / Math.log(10);
         }
         if (dpower < 0 && ((1+dpower)%1) > (Math.log(0.5) / Math.log(10))) {
             // snap to next power of 10
-            t = f + Math.pow(10, Math.ceil(dpower));
+            to = t = f + Math.pow(10, Math.ceil(dpower));
         }
+
+        function round(a) {
+            return Math.abs(a - .5) < .25 ? ~~(a) + .5 : Math.round(a);
+        }
+
         var d = (t - f) / steps,
-            mag = Math.floor(Math.log(d) / Math.log(10)),
-            magPow = Math.pow(10, mag),
-            magMsd = Math.floor(d / magPow + 0.5);
-        
-        // promote the MSD to either 1, 2, or 5
-        if (magMsd > 5.0)
-            magMsd = 10.0;
-        else if (magMsd > 2.0)
-            magMsd = 5.0;
-        else if (magMsd > 1.0)
-            magMsd = 2.0;
+            r = ~~(d),
+            R = r,
+            i = 0;
 
-        var step = magMsd * magPow;
-        if ((Math.abs(step) - Math.abs(f % step)) > Math.abs(step/100))
-            f = f - (f % step);
-        if ((Math.abs(step) - Math.abs(t % step)) > Math.abs(step/100))
-            t = t - (-t % step);
+        if (r) {
+            while (R) {
+                i--;
+                R = ~~(d * Math.pow(10, i)) / Math.pow(10, i);
+            }
 
-        return { from: f, to: t, power: mag }
+            i ++;
+        } else {
+            if(d == 0 || !isFinite(d)) {
+                i = 1;
+            } else {
+                while (!r) {
+                    i = i || 1;
+                    r = ~~(d * Math.pow(10, i)) / Math.pow(10, i);
+                    i++;
+                }
+            }
 
+            i && i--;
+        }
+
+        t = round(to * Math.pow(10, i)) / Math.pow(10, i);
+
+        if (t < to) {
+            t = round((to + .5) * Math.pow(10, i)) / Math.pow(10, i);
+        }
+
+        f = round((from - (i > 0 ? 0 : .5)) * Math.pow(10, i)) / Math.pow(10, i);
+        return { from: f, to: t, power: i };
     }, 
 
     axis: function (x, y, length, from, to, steps, orientation, labels, type, dashsize, paper) {
@@ -772,7 +790,7 @@ Raphael.g = {
             txtattr = { font: "11px 'Fontin Sans', Fontin-Sans, sans-serif" },
             text = paper.set(),
             d;
-alert(from + " " + to + " " + steps + "\n" + f + " " + t + " " + i);
+
         d = (t - f) / steps;
 
         var label = f,
