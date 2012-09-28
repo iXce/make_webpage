@@ -11,9 +11,10 @@
     <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
       body {
-    {% if page.title %}
+        background: #FFF url("static/img/light_wool.png") repeat;
+{% if page.title %}
         padding-top: 60px;
-    {% endif %}
+{% endif %}
         padding-bottom: 40px;
       }
     </style>
@@ -37,7 +38,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">{{ page.title }}</a>
+          <a class="brand" href="{{ params.target_url }}">{{ page.title }}</a>
         </div>
       </div>
     </div>

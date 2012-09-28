@@ -9,7 +9,7 @@ from jinja2 import Template, Environment, FileSystemLoader
 from jinjafilters import inc_filter
 from getimageinfo import getImageInfo
 
-DEBUG = False
+DEBUG = True
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 WEB_ROOT = "/meleze/data0/public_html"
 WEB_URL = "http://www-roc.inria.fr/cluster-willow"
@@ -162,6 +162,7 @@ def preprocess(items, params):
 def make_webpage(data):
     params = data['params']
     target_dir = params['target_dir']
+    params['target_url'] = params['target'].replace(WEB_ROOT, WEB_URL)
     prepare_output(target_dir)
     params['copy_images'] = bool(params['copy_images'])
     pages = preprocess(data['items'], params)
