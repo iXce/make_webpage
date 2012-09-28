@@ -10,7 +10,7 @@ from getimageinfo import getImageInfo
 from utils import get_file_type, get_mimetype
 from items import sanitize_plot
 
-DEBUG = True
+DEBUG = False
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 WEB_ROOT = "/meleze/data0/public_html"
 WEB_URL = "http://www-roc.inria.fr/cluster-willow"
@@ -41,6 +41,8 @@ class WebpageMaker(object):
 
     def __init__(self, data):
         params = data['params']
+        params['target'] = os.path.expanduser(params['target'])
+        params['target_dir'] = os.path.normpath(os.path.expanduser(params['target_dir']))
         params['target_url'] = params['target'].replace(WEB_ROOT, WEB_URL)
         params['copy_images'] = bool(params['copy_images'])
         self.params = params
