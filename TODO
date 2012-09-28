@@ -1,4 +1,5 @@
-- Plots axis are sometimes totally wrong : fix it
+- Check that plots are now correct
 - Improve template
 - Add stacks handling (of images, of heatmaps...)
 - Improve colormap for heatmaps
+- Possibly pregenerate heatmaps, now that matrix are lightweight
