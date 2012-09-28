@@ -83,8 +83,12 @@ def process_item(item, copy, target_dir):
         else:
             newitem["url"] = item.replace(target_dir, "")
         return newitem
-    elif isinstance(item, dict) and "image" in item:
-        item["image"] = process_item(item["image"], copy, target_dir)
+    elif isinstance(item, dict) and "type" in item and item["type"] in ("image", "video"):
+        processed = process_item(item["url"], copy, target_dir)
+        if isinstance(processed, dict):
+            item.update(processed)
+        else:
+            item["url"] = processed
         return item
     elif isinstance(item, dict) and "type" in item and item["type"] == "plot":
         return sanitize_plot(item)
