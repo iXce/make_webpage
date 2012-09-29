@@ -42,6 +42,8 @@ class WebpageMaker(object):
         params['target'] = os.path.expanduser(params['target'])
         params['target_dir'] = os.path.normpath(os.path.expanduser(params['target_dir']))
         params['target_url'] = params['target'].replace(WEB_ROOT, WEB_URL)
+        params['WEB_ROOT'] = WEB_ROOT
+        params['WEB_URL'] = WEB_URL
         params['copy_images'] = bool(params['copy_images'])
         self.params = params
         self.items = data['items']

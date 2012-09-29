@@ -1,6 +1,9 @@
 import os
 import simplejson
 import gzip
+from PIL import Image
+
+from color_interpolation import LinearColorMap
 
 def flatten_singletons(l):
     first = l[0]
@@ -14,6 +17,19 @@ def sanitize_plot(item, params):
     item["ydata"] = flatten_singletons(item["ydata"])
     return item
 
+def colorize_heatmap(heatmap, min_val, max_val, colormap):
+    cmap = LinearColorMap(min_val, max_val, colormap, False)
+    w = len(heatmap[0])
+    h = len(heatmap)
+    im = Image.new("RGB", (w, h))
+    pixels = im.load()
+    for x in range(w):
+        for y in range(h):
+            pixels[x, y] = cmap(heatmap[y][x])
+    return im
+
+DEFAULT_COLORMAP = ["#0a0", "#6c0", "#ee0", "#eb4", "#eb9", "#fff"]
+
 def process_heatmap(item, params):
     data = item["data"]
     item["height"] = len(data)
@@ -23,19 +39,25 @@ def process_heatmap(item, params):
     item["height"] = 0
     item["min"] = min([min(k) for k in data])
     item["max"] = max([max(k) for k in data])
-    # Precompute image ?
+    colormap = item["colormap"] if "colormap" in item else DEFAULT_COLORMAP
+    img = colorize_heatmap(data, item["min"], item["max"], colormap)
     heatmap_json = "%08d.json" % process_heatmap.heatmap_id
     process_heatmap.heatmap_id += 1
+    # Save image
+    imgpath = os.path.join(params["target_dir"], "imgs", "json")
+    if not os.path.exists(imgpath): os.makedirs(imgpath)
+    img.save(os.path.join(imgpath, heatmap_json + ".png"), "PNG")
+    item["imgurl"] = os.path.join("imgs", heatmap_json + ".png")
+    # Save JSON
     jsonpath = os.path.join(params["target_dir"], "json")
-    if not os.path.exists(jsonpath):
-        os.makedirs(jsonpath)
+    if not os.path.exists(jsonpath): os.makedirs(jsonpath)
     json = simplejson.dumps(data)
     json = json.replace(" ", "")
     open(os.path.join(jsonpath, heatmap_json), "w").write(json)
     gzip.open(os.path.join(jsonpath, heatmap_json + ".gz"), "w").write(json.replace(" ", ""))
     del item["data"]
     # FIXME: dirty hack for gzipped jsons
-    if WEB_ROOT in params["target_dir"]:
+    if params["WEB_ROOT"] in params["target_dir"]:
         item["url"] = os.path.join("static", "php", "servejson.php?json=" + heatmap_json)
     else:
         item["url"] = os.path.join("json", heatmap_json)
