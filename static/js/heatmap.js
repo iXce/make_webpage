@@ -5,53 +5,10 @@ function heatmap_maker(selector, width, height, min, max) {
 
     if (height == 0) height = width * dy / dx;
     if (width == 0) width = height * dx / dy;
-    // Fix the aspect ratio.
-    // var ka = dy / dx, kb = height / width;
-    // if (ka < kb) height = width * ka;
-    // else width = height / ka;
 
-    var x = d3.scale.linear()
-        .domain([0, dx])
-        .range([0, width]);
+    d3.select(selector + " img")
+        .on("mouseover", onMouseover).on("mousemove", onMousemove).on("mouseout", onMouseout);
 
-    var y = d3.scale.linear()
-        .domain([0, dy])
-        .range([height, 0]);
-
-    var colormap = ["#0a0", "#6c0", "#ee0", "#eb4", "#eb9", "#fff"];
-    var domain = [];
-    for (i = 0; i < colormap.length; i++) {
-        domain[i] = min + i * (max - min) / colormap.length;
-    }
-    var color = d3.scale.linear()
-        .domain(domain)
-        .range(colormap);
-
-    d3.select(selector).append("canvas")
-        .attr("width", dx)
-        .attr("height", dy)
-        .style("width", width + "px")
-        .style("height", height + "px")
-        .call(drawImage).on("mouseover", onMouseover).on("mousemove", onMousemove).on("mouseout", onMouseout);
-
-    // Compute the pixel colors; scaled by CSS.
-    function drawImage(canvas) {
-      var context = canvas.node().getContext("2d"),
-          image = context.createImageData(dx, dy);
-
-      for (var y = 0, p = -1; y < dy; ++y) {
-        for (var x = 0; x < dx; ++x) {
-          var c = d3.rgb(color(heatmap[y][x]));
-          image.data[++p] = c.r;
-          image.data[++p] = c.g;
-          image.data[++p] = c.b;
-          image.data[++p] = 255;
-        }
-      }
-
-      context.putImageData(image, 0, 0);
-    }
-    
     var x2 = d3.scale.linear()
         .domain([0, width])
         .range([0, dx]);

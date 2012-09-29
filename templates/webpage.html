@@ -106,7 +106,7 @@
 {% endif %}
     <script type="text/javascript">
 {% if types.image %}
-        $('img').jail({offset:800,placeholder:'static/img/blank.gif'});
+        $('img:not(.nojail)').jail({offset:800,placeholder:'static/img/blank.gif'});
 {% endif %}
 {% do 'plotid'|inc(0, None, True) %}
 {% do 'heatmapid'|inc(0, None, True) %}

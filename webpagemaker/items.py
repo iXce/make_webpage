@@ -47,7 +47,7 @@ def process_heatmap(item, params):
     imgpath = os.path.join(params["target_dir"], "imgs", "json")
     if not os.path.exists(imgpath): os.makedirs(imgpath)
     img.save(os.path.join(imgpath, heatmap_json + ".png"), "PNG")
-    item["imgurl"] = os.path.join("imgs", heatmap_json + ".png")
+    item["imgurl"] = os.path.join("imgs", "json", heatmap_json + ".png")
     # Save JSON
     jsonpath = os.path.join(params["target_dir"], "json")
     if not os.path.exists(jsonpath): os.makedirs(jsonpath)
