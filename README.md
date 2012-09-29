@@ -17,6 +17,7 @@ Planned features
 ================
 - Stacked items (several items on top of each other, with one label per item,
   switching between items is done through a combobox or a list of buttons)
+  as struct .type = 'stack', .stack = cellofitems and .labels = cellofstrings
 
 How to define objects
 =====================

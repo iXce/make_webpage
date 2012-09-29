@@ -84,6 +84,9 @@ class WebpageMaker(object):
                 else:
                     item["url"] = processed
                 return item
+            elif item["type"] == "stack":
+                item["stack"] = self.process_items(item["stack"])
+                return item
             elif item["type"] in item_processors:
                 return item_processors[item["type"]](item, self.params)
             else:
