@@ -35,8 +35,10 @@ def process_heatmap(item, params):
     gzip.open(os.path.join(jsonpath, heatmap_json + ".gz"), "w").write(json.replace(" ", ""))
     del item["data"]
     # FIXME: dirty hack for gzipped jsons
-    #item["url"] = os.path.join("json", heatmap_json)
-    item["url"] = os.path.join("static", "php", "servejson.php?json=" + heatmap_json)
+    if WEB_ROOT in params["target_dir"]:
+        item["url"] = os.path.join("static", "php", "servejson.php?json=" + heatmap_json)
+    else:
+        item["url"] = os.path.join("json", heatmap_json)
     return item
 process_heatmap.heatmap_id = 1
 
