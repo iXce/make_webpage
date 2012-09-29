@@ -28,7 +28,11 @@ def colorize_heatmap(heatmap, min_val, max_val, colormap):
             pixels[x, y] = cmap(heatmap[y][x])
     return im
 
-DEFAULT_COLORMAP = ["#0a0", "#6c0", "#ee0", "#eb4", "#eb9", "#fff"]
+COLORMAPS = {
+    "divergent": ["#3b4cc0","#445acc","#4d68d7","#5775e1","#6282ea","#6c8ef1","#779af7","#82a5fb","#8db0fe","#98b9ff","#a3c2ff","#aec9fd","#b8d0f9","#c2d5f4","#ccd9ee","#d5dbe6","#dddddd","#e5d8d1","#ecd3c5","#f1ccb9","#f5c4ad","#f7bba0","#f7b194","#f7a687","#f49a7b","#f18d6f","#ec7f63","#e57058","#de604d","#d55042","#cb3e38","#c0282f","#b40426"],
+    "greenyellow": ["#0a0", "#6c0", "#ee0", "#eb4", "#eb9", "#fff"],
+}
+DEFAULT_COLORMAP = COLORMAPS["divergent"]
 
 def process_heatmap(item, params):
     data = item["data"]
@@ -40,6 +44,9 @@ def process_heatmap(item, params):
     item["min"] = min([min(k) for k in data])
     item["max"] = max([max(k) for k in data])
     colormap = item["colormap"] if "colormap" in item else DEFAULT_COLORMAP
+    if type(colormap) in (str, unicode):
+        if colormap in COLORMAPS: colormap = COLORMAPS[colormap]
+        else: colormap = DEFAULT_COLORMAP
     img = colorize_heatmap(data, item["min"], item["max"], colormap)
     heatmap_json = "%08d.json" % process_heatmap.heatmap_id
     process_heatmap.heatmap_id += 1

@@ -40,7 +40,8 @@ Heatmap
 -------
 Struct with .type = 'heatmap', .data = yourdatamatrix. Produces a nice colored
 heatmap with value-at-cursor-position tooltips. You can specify a custom
-colormap by putting a cell of strings in .colormap field.
+colormap by putting a cell of strings in .colormap field. The default colormap
+is not the usual rainbow colormap, but rather one from [1].
 
 Subpages
 --------
@@ -126,3 +127,9 @@ Dependencies (shipped in this package)
 - Raphael/gRaphael for plots http://raphaeljs.com/ and http://g.raphaeljs.com/
 - JAIL for lazy loading http://www.sebastianoarmelibattana.com/projects/jail
 - d3.js for visualizations http://d3js.org/
+
+References
+==========
+[1] "Diverging Color Maps for Scientific Visualization." Kenneth Moreland. In
+    Proceedings of the 5th International Symposium on Visual Computing. December
+    2009.

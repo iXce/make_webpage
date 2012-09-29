@@ -1,15 +1,6 @@
 # Adapted from http://www.elifulkerson.com/projects/rgb-color-gradation.php
 
-import string, math
-
-def interpolate( startcolor, goalcolor, steps ):
-    """
-    wrapper for interpolate_tuple that accepts colors as html ("#CCCCC" and such)
-    """
-    start_tuple = make_color_tuple(startcolor)
-    goal_tuple = make_color_tuple(goalcolor)
-
-    return interpolate_tuple(start_tuple, goal_tuple, steps)
+import math
 
 class LinearColorMap(object):
     def __init__(self, min_val, max_val, colormap, html = True):
@@ -60,19 +51,8 @@ class LinearColorMap(object):
 
         if not self.html:
             return iR, iG, iB
-
-        hR = string.replace(hex(iR), "0x", "")
-        hG = string.replace(hex(iG), "0x", "")
-        hB = string.replace(hex(iB), "0x", "")
-
-        if len(hR) == 1:
-            hR = "0" + hR
-        if len(hB) == 1:
-            hB = "0" + hB
-        if len(hG) == 1:
-            hG = "0" + hG
-
-        return string.upper("#"+hR+hG+hB)
+        else:
+            return "#%02x%02x%02x" % (iR, iG, iB)
 
     def __call__(self, value):
         if value in self.cache: return self.cache[value]
