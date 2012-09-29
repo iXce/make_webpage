@@ -1,4 +1,4 @@
-var r = Raphael("plotholder{{ 'plotid'|inc }}");
+var r = Raphael("plotholder{{ itemid }}");
 var chart = r.linechart(
     10, 10,
     390, 180,

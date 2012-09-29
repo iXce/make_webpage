@@ -108,8 +108,7 @@
 {% if types.image %}
         $('img:not(.nojail)').jail({offset:800,placeholder:'static/img/blank.gif'});
 {% endif %}
-{% do 'plotid'|inc(0, None, True) %}
-{% do 'heatmapid'|inc(0, None, True) %}
+{% do 'itemid'|inc(0, None, True) %}
 {% for item0 in page.items %}
 {% if item0 is sequence and not item0 is string and not item0 is mapping %}
 {% for item in item0 %}
