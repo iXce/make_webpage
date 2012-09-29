@@ -9,12 +9,12 @@ def flatten_singletons(l):
     else:
         return [flatten_singletons(v) for v in l]
 
-def sanitize_plot(item):
+def sanitize_plot(item, params):
     item["xdata"] = flatten_singletons(item["xdata"])
     item["ydata"] = flatten_singletons(item["ydata"])
     return item
 
-def process_heatmap(item, target_dir):
+def process_heatmap(item, params):
     data = item["data"]
     item["height"] = len(data)
     item["width"] = len(data[0])
@@ -26,7 +26,7 @@ def process_heatmap(item, target_dir):
     # Precompute image ?
     heatmap_json = "%08d.json" % process_heatmap.heatmap_id
     process_heatmap.heatmap_id += 1
-    jsonpath = os.path.join(target_dir, "json")
+    jsonpath = os.path.join(params["target_dir"], "json")
     if not os.path.exists(jsonpath):
         os.makedirs(jsonpath)
     json = simplejson.dumps(data)
@@ -39,3 +39,6 @@ def process_heatmap(item, target_dir):
     item["url"] = os.path.join("static", "php", "servejson.php?json=" + heatmap_json)
     return item
 process_heatmap.heatmap_id = 1
+
+item_processors = {"heatmap": process_heatmap,
+                   "plot": sanitize_plot}

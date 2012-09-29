@@ -8,7 +8,7 @@ from jinja2 import Template, Environment, FileSystemLoader
 from jinjafilters import inc_filter
 from getimageinfo import getImageInfo
 from utils import get_file_type, get_mimetype
-from items import sanitize_plot, process_heatmap
+from items import item_processors
 
 DEBUG = True
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -84,10 +84,8 @@ class WebpageMaker(object):
                 else:
                     item["url"] = processed
                 return item
-            elif item["type"] == "plot":
-                return sanitize_plot(item)
-            elif item["type"] == "heatmap":
-                return process_heatmap(item, self.params["target_dir"])
+            elif item["type"] in item_processors:
+                return item_processors[item["type"]](item, self.params)
             else:
                 return item
         elif isinstance(item, list):
