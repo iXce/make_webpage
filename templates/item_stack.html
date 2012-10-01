@@ -9,10 +9,11 @@
     <div class="tab-content">
 {% do 'stacktabid'|inc(0, None, True) %}
 {% for item in thisitem.stack %}
-    <div class="tab-pane{% if loop.first %} active{% endif %}" id="tab{{ itemid }}-{{ stacktabid|inc }}">
+    <div class="tab-pane{% if item.type == "plot" %} tab-raphael{% endif %}{% if loop.first %} active{% endif %}" id="tab{{ itemid }}-{{ stacktabid|inc }}">
       {% include "item_template.html" %}
     </div>
 {% endfor %}
     </div>
+    <div class="clearfix"></div>
 </div>
 {% set item = thisitem %}

@@ -23,9 +23,17 @@ table a:hover {
     width: 400px;
     height: 200px;
 }
-.plotholder svg {
-    width: 400px;
-    height: 200px;
+.tab-content  {
+    float: left;
+}
+.tab-raphael {
+    display: block !important;
+    position: absolute;
+    top: -9999px;
+}
+.tab-raphael.active {
+    position: relative;
+    top: 0;
 }
 .heatmap-tooltip {
   position: absolute;
