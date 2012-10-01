@@ -12,6 +12,7 @@ Currently supported objects
 - Comment fields (interactive)
 - Line plots
 - Subpages
+- Stacks
 
 Planned features
 ================
@@ -24,6 +25,8 @@ Images & videos
 ---------------
 Either just a path (or possibly just a matrix for images), or make a struct
 with .type = 'image' (or 'video') and .url = 'on_disk_path_to_image'
+Currently only .mp4 and .webm video should correctly work. Might require some
+brother-specific tricks.
 
 Comments
 --------
