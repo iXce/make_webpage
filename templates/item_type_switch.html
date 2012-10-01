@@ -8,6 +8,8 @@
     {% include "item_plot.html" %}
 {% elif item.type == "heatmap" %}
     {% include "item_heatmap.html" %}
+{% elif item.type == "stack" %}
+    {% include "item_stack.html" %}
 {% elif item.type == "subpage" %}
     <a href="{{ item.url }}"{% if item.attrs %} {{ item.attrs }}{% endif %}>Subpage</a>
 {% else %}

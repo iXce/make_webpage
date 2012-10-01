@@ -1,5 +1,3 @@
-- Check that plots are now correct
+- Check that plots are now correct (should be, after a first set of tests)
 - Improve template
-- Add stacks handling (of images, of heatmaps...)
-- Improve colormap for heatmaps
-- Possibly pregenerate heatmaps, now that matrix are lightweight
+- Fix height bugs for stacks

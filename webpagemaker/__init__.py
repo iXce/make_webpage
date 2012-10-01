@@ -30,6 +30,14 @@ class Page(object):
         else:
             return [self]
     breadcrumbs = property(_get_breadcrumbs)
+    
+def register_type(func):
+    def wrapped(self, item):
+        item = func(self, item)
+        if isinstance(item, dict) and "type" in item:
+            self.item_types[item["type"]] = True
+        return item
+    return wrapped
 
 class WebpageMaker(object):
     params = None
@@ -58,6 +66,7 @@ class WebpageMaker(object):
             if DEBUG and os.path.exists(static_dir): shutil.rmtree(static_dir)
             shutil.copytree(os.path.join(THIS_DIR, "static"), static_dir)
 
+    @register_type
     def process_item(self, item):
         if isinstance(item, dict) and "subpage" in item:
             item["subpage"] = self.process_item(item["subpage"])
@@ -101,8 +110,6 @@ class WebpageMaker(object):
 dict, and possibly copy the file to the target directory"""
         for i in xrange(len(items)):
             items[i] = self.process_item(items[i])
-            if isinstance(items[i], dict) and "type" in items[i]:
-                self.item_types[items[i]["type"]] = True
         return items
 
     def make_subpage(self, item, level, basename, parent):
@@ -114,6 +121,7 @@ dict, and possibly copy the file to the target directory"""
         return item, subpage, extra_subpages
 
     def find_subpages(self, items, basename, level, parent):
+        if not isinstance(items, list): items = [items]
         subpages = []
         for i in xrange(len(items)):
             item = items[i]
@@ -122,6 +130,9 @@ dict, and possibly copy the file to the target directory"""
                 if "subpage_title" in item: subpage.title = item["subpage_title"]
                 if "subpage_description" in item: subpage.description = item["subpage_description"]
                 subpages.extend([subpage] + extra_subpages)
+            elif isinstance(item, dict) and "type" in item and item["type"] == "stack":
+                item["stack"], extra_subpages = self.find_subpages(item["stack"], basename, level, parent)
+                subpages.extend(extra_subpages)
             elif isinstance(item, list):
                 if level > 0 and level % 2 == 0: # level is even, we have a subpage
                     item, subpage, extra_subpages = self.make_subpage(item, level, basename, parent)
@@ -145,7 +156,7 @@ dict, and possibly copy the file to the target directory"""
         print >> sys.stderr, target_path.replace(WEB_ROOT, WEB_URL)
 
     def preprocess(self):
-        items = self.process_items(self.items)
+        items = self.process_item(self.items)
         basename = os.path.basename(self.params['target'])
         mainpage = Page(basename, None)
         mainpage.items, subpages = self.find_subpages(items, basename, 0, mainpage)

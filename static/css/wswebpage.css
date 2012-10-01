@@ -10,12 +10,22 @@
     min-width: 200px;
     width: 100%;
 }
+table a {
+    display: block;
+}
+table a:hover {
+    text-decoration: none;
+}
+.tab-content {
+    overflow: hidden;
+}
 .plotholder {
     width: 400px;
     height: 200px;
 }
-.plotholder a {
-    text-decoration: none;
+.plotholder svg {
+    width: 400px;
+    height: 200px;
 }
 .heatmap-tooltip {
   position: absolute;

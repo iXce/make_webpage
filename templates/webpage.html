@@ -106,7 +106,7 @@
 {% endif %}
     <script type="text/javascript">
 {% if types.image %}
-        $('img:not(.nojail)').jail({offset:800,placeholder:'static/img/blank.gif'});
+        $('img:not(.nojail)').jail({offset:800,placeholder:'static/img/blank.gif'{% if types.stack %},loadHiddenImages:true{% endif %}});
 {% endif %}
 {% do 'itemid'|inc(0, None, True) %}
 {% for item0 in page.items %}

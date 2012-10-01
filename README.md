@@ -15,9 +15,7 @@ Currently supported objects
 
 Planned features
 ================
-- Stacked items (several items on top of each other, with one label per item,
-  switching between items is done through a combobox or a list of buttons)
-  as struct .type = 'stack', .stack = cellofitems and .labels = cellofstrings
+- ???
 
 How to define objects
 =====================
@@ -50,6 +48,12 @@ table page), which will make a "Subpage" link in the current page, or put your
 subpage cell as a .subpage field of another object, on which the link to the
 subpage will be added. If you use the latter, you can also specify the
 .subpage_title and .subpage_description fields.
+
+Stacks
+------
+A stack of items on top of each other, with a set of tabs to switch between
+items. Define it as a struct with .type = 'stack', .stack = cellofitems and
+.labels = cellofstrings
 
 How to add a new object type
 ============================
