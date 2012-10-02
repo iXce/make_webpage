@@ -5,7 +5,7 @@ function make_webpage(items, target, copy_images, page_title, page_description)
     % (as matrices), or more complicated structures (to be defined later)
     % You can also generate subpages by passing such a cell array as one item
 
-    if nargin < 3, copy_images = false; end
+    if nargin < 3, copy_images = true; end
     if nargin < 4, page_title = ''; end
     if nargin < 5, page_description = ''; end
 
