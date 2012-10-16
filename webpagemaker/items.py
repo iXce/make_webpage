@@ -39,8 +39,8 @@ def process_heatmap(item, params):
     item["height"] = len(data)
     item["width"] = len(data[0])
     # FIXME : temp hack
-    item["width"] = min(item["width"], 400)
-    item["height"] = 0
+    #item["width"] = min(item["width"], 400)
+    #item["height"] = 0
     if not "min" in item:
         item["min"] = min([min(k) for k in data])
     if not "max" in item:

@@ -35,6 +35,9 @@ table a:hover {
     position: relative;
     top: 0;
 }
+img {
+    max-width: none;
+}
 .heatmap-tooltip {
   position: absolute;
   display: block;
