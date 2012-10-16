@@ -41,8 +41,10 @@ def process_heatmap(item, params):
     # FIXME : temp hack
     item["width"] = min(item["width"], 400)
     item["height"] = 0
-    item["min"] = min([min(k) for k in data])
-    item["max"] = max([max(k) for k in data])
+    if not "min" in item:
+        item["min"] = min([min(k) for k in data])
+    if not "max" in item:
+        item["max"] = max([max(k) for k in data])
     colormap = item["colormap"] if "colormap" in item else DEFAULT_COLORMAP
     if type(colormap) in (str, unicode):
         if colormap in COLORMAPS: colormap = COLORMAPS[colormap]
