@@ -48,7 +48,7 @@ class WebpageMaker(object):
     def __init__(self, data):
         params = data['params']
         params['target'] = os.path.expanduser(params['target'])
-        params['target_dir'] = os.path.normpath(os.path.expanduser(params['target_dir']))
+        params['target_dir'] = os.path.join(os.path.normpath(os.path.expanduser(params['target_dir'])), '')
         params['target_url'] = params['target'].replace(WEB_ROOT, WEB_URL)
         params['WEB_ROOT'] = WEB_ROOT
         params['WEB_URL'] = WEB_URL
@@ -126,7 +126,7 @@ dict, and possibly copy the file to the target directory"""
         for i in xrange(len(items)):
             item = items[i]
             if isinstance(item, dict) and "subpage" in item:
-                item["subpage"], subpage, extra_subpages = self.make_subpage(item["subpage"], level, basename, parent)
+                item["subpage"], subpage, extra_subpages = self.make_subpage(item["subpage"], 0, basename, parent)
                 if "subpage_title" in item: subpage.title = item["subpage_title"]
                 if "subpage_description" in item: subpage.description = item["subpage_description"]
                 subpages.extend([subpage] + extra_subpages)

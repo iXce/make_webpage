@@ -12,6 +12,8 @@
     {% include "item_stack.html" %}
 {% elif item.type == "subpage" %}
     <a href="{{ item.url }}"{% if item.attrs %} {{ item.attrs }}{% endif %}>Subpage</a>
+{% elif item.type == "text" %}
+    <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item.text }}</span>
 {% else %}
     <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item }}</span>
 {% endif %}
