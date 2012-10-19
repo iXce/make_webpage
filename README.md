@@ -37,6 +37,14 @@ Plots
 Struct with .type = 'plot', .xdata = 1d or 2d matrix of values (2d if multiple
 plots), same for .ydata
 
+XKCD-like plots
+---------------
+Struct with .type = 'xkcdplot', .xdata = 1d or 2d matrix of values (2d if
+multiple plots), same for .ydata. You can specify .minx, .maxx, .miny, .maxy,
+.xlabel, .ylabel, .title fields (min/max* handle the axis limits, the other are
+the axis labels and plot title). You can also specify curves colors through
+.colors = a cell array of colors (one per curve).
+
 Heatmap
 -------
 Struct with .type = 'heatmap', .data = yourdatamatrix. Produces a nice colored
@@ -50,7 +58,8 @@ Just put a cell into a 2d cell (putting a cell into a 1d cell will lead to a 2d
 table page), which will make a "Subpage" link in the current page, or put your
 subpage cell as a .subpage field of another object, on which the link to the
 subpage will be added. If you use the latter, you can also specify the
-.subpage_title and .subpage_description fields.
+.subpage_title and .subpage_description fields. If you want to make a text link,
+make your item as before plus with .type = 'text' and .text = 'the-link-text'.
 
 Stacks
 ------
