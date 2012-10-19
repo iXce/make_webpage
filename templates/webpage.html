@@ -90,8 +90,13 @@
 {% if types.image %}
     <script src="static/js/jail.min.js"></script>
 {% endif %}
-{% if types.heatmap %}
+{% if types.heatmap or types.xkcdplot %}
     <script src="static/js/d3.v2.min.js"></script>
+{% endif %}
+{% if types.xkcdplot %}
+    <script src="static/js/xkcd.js"></script>
+{% endif %}
+{% if types.heatmap %}
     <script src="static/js/heatmap.js"></script>
 {% endif %}
 {% if types.comment %}

@@ -1,6 +1,8 @@
 {% set itemid = 'itemid'|inc %}
 {% if item.type == "plot" %}
 {% include "script_plot.js" %}
+{% elif item.type == "xkcdplot" %}
+{% include "script_xkcdplot.js" %}
 {% elif item.type == "heatmap" %}
 {% include "script_heatmap.js" %}
 {% elif item.type == "stack" %}

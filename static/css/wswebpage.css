@@ -56,4 +56,35 @@ img {
   background-color: #fff;
   padding: 3px 10px 3px 10px;
 }
-.
+
+@font-face {
+    font-family: "xkcd";
+    src: url('http://antiyawn.com/uploads/Humor-Sans.ttf');
+}
+
+.xkcdplotholder {
+    font-family: "xkcd", sans-serif;
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+}
+
+.xkcdplotholder text.title {
+    font-size: 20px;
+}
+
+.xkcdplotholder path {
+    fill: none;
+    stroke-width: 2.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.xkcdplotholder path.axis {
+    stroke: black;
+}
+
+.xkcdplotholder path.bgline {
+    stroke: white;
+    stroke-width: 6px;
+}

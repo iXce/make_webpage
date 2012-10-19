@@ -73,5 +73,57 @@ def process_heatmap(item, params):
     return item
 process_heatmap.heatmap_id = 1
 
+class XKCDCurve(list):
+    def __init__(self, l):
+        l2 = self._prune(l)
+        super(XKCDCurve, self).__init__(l2)
+
+    def _prune(self, l):
+        l2 = [l[0]]
+        for i in range(1, len(l)):
+            if l2[-1]["x"] == l[i]["x"] and l2[-1]["y"] == l[i]["y"]:
+                continue
+            else:
+                l2.append(l[i])
+        return l2
+
+XKCDCOLORS = ["steelblue", "red", '#bcbd22', '#c5b0d5', '#ff9896', '#dbdb8d', '#98df8a', '#7f7f7f', '#d62728', '#2ca02c', '#f7b6d2', '#c7c7c7', '#9edae', '#17becf', '#9467bd', '#ff7f0e', '#e377c2', '#8c564b', '#1f77b4', '#ffbb78', '#c49c94', '#aec7e8', "#6BAED6"]
+
+def process_xkcdplot(item, params):
+    # Sanitize plot
+    item = sanitize_plot(item, params)
+    # Now prepare curves
+    if type(item["ydata"][0]) == list:
+        item["curves"] = [XKCDCurve([{"x": "%.5e" % float(item["xdata"][l][i]), "y": "%.5e" % float(item["ydata"][l][i])}
+                                     for i in range(0, len(item["ydata"][l]))])
+                                    for l in range(len(item["ydata"]))]
+    else:
+        item["curves"] = XKCDCurve([{"x": "%.5e" % float(item["xdata"][i]), "y": ".5e" % float(item["ydata"][i])}
+                                    for i in range(len(item["ydata"]))])
+    minxs = []
+    maxxs = []
+    minys = []
+    maxys = []
+    for curve in item["curves"]:
+        minxs.append(min((p["x"] for p in curve)))
+        maxxs.append(max((p["x"] for p in curve)))
+        minys.append(min((p["y"] for p in curve)))
+        maxys.append(max((p["y"] for p in curve)))
+    if "minx" not in item: item["minx"] = min(minxs)
+    if "maxx" not in item: item["maxx"] = max(maxxs)
+    if "miny" not in item: item["miny"] = min(minys)
+    if "maxy" not in item: item["maxy"] = max(maxys)
+    if "colors" in item:
+        for i in range(min(len(item["colors"]), len(item["curves"]))):
+            item["curves"][i].color = item["colors"][i]
+    else:
+        for i in range(min(len(XKCDCOLORS), len(item["curves"]))):
+            item["curves"][i].color = XKCDCOLORS[i]
+    if not "xlabel" in item: item["xlabel"] = ""
+    if not "ylabel" in item: item["ylabel"] = ""
+    if not "title" in item: item["title"] = ""
+    return item
+
 item_processors = {"heatmap": process_heatmap,
-                   "plot": sanitize_plot}
+                   "plot": sanitize_plot,
+                   "xkcdplot": process_xkcdplot}
