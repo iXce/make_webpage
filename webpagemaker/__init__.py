@@ -32,8 +32,8 @@ class Page(object):
     breadcrumbs = property(_get_breadcrumbs)
     
 def register_type(func):
-    def wrapped(self, item):
-        item = func(self, item)
+    def wrapped(self, *a):
+        item = func(self, *a)
         if isinstance(item, dict) and "type" in item:
             self.item_types[item["type"]] = True
         return item
@@ -67,17 +67,23 @@ class WebpageMaker(object):
             shutil.copytree(os.path.join(THIS_DIR, "static"), static_dir)
 
     @register_type
-    def process_item(self, item):
+    def process_item(self, item, orig_item = None):
         if isinstance(item, dict) and "subpage" in item:
             item["subpage"] = self.process_item(item["subpage"])
         if type(item) in (str,unicode) and os.path.exists(item):
+            if not orig_item: orig_item = {}
             newitem = {"type": get_file_type(item), "mime": get_mimetype(item)}
-            if newitem["type"] == "image":
+            if "width" in orig_item: newitem["width"] = orig_item["width"]
+            if "height" in orig_item: newitem["height"] = orig_item["height"]
+            if newitem["type"] == "image" and "width" not in newitem and "height" not in newitem:
                 content_type, width, height = getImageInfo(open(item).read())
                 if content_type and width and height:
                     newitem["width"] = width
                     newitem["height"] = height
-            if self.params["copy_images"]:
+            if self.params["WEB_ROOT"] in item:
+                newitem["url"] = item.replace(self.params["WEB_ROOT"],
+                                              self.params["WEB_URL"])
+            elif self.params["copy_images"]:
                 new_name = item.replace(os.sep, "_")
                 new_path = os.path.join(self.params["target_dir"], "imgs", new_name)
                 if not DEBUG: shutil.copy(item, new_path)
@@ -87,7 +93,7 @@ class WebpageMaker(object):
             return newitem
         elif isinstance(item, dict) and "type" in item:
             if item["type"] in ("image", "video"):
-                processed = self.process_item(item["url"])
+                processed = self.process_item(item["url"], item)
                 if isinstance(processed, dict):
                     item.update(processed)
                 else:
