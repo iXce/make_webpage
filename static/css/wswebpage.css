@@ -59,14 +59,13 @@ img {
 
 @font-face {
     font-family: "xkcd";
-    src: url('http://antiyawn.com/uploads/Humor-Sans.ttf');
+    src: url('Humor-Sans.ttf');
 }
 
 .xkcdplotholder {
     font-family: "xkcd", sans-serif;
     font-size: 16px;
     color: #333;
-    text-align: center;
 }
 
 .xkcdplotholder text.title {

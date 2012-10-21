@@ -70,15 +70,21 @@ function xkcdplot(xlabel, ylabel, title) {
         el.append("svg:path")
             .attr("class", "x axis arrow")
             .attr("d", axis([[width - s + o, y0 + aa], [width + o, y0], [width - s + o, y0 - aa]]));
-        el.append("svg:path")
-            .attr("class", "x axis arrow")
-            .attr("d", axis([[s - o, y0 + aa], [-o, y0], [s - o, y0 - aa]]));
+        if ((s-o) < x0)
+        {
+            el.append("svg:path")
+                .attr("class", "x axis arrow")
+                .attr("d", axis([[s - o, y0 + aa], [-o, y0], [s - o, y0 - aa]]));
+        }
         el.append("svg:path")
             .attr("class", "y axis arrow")
             .attr("d", axis([[x0 + aa, s - o], [x0, -o], [x0 - aa, s - o]]));
-        el.append("svg:path")
-            .attr("class", "y axis arrow")
-            .attr("d", axis([[x0 + aa, height - s + o], [x0, height + o], [x0 - aa, height - s + o]]));
+        if ((height - s + o) > y0)
+        {
+            el.append("svg:path")
+                .attr("class", "y axis arrow")
+                .attr("d", axis([[x0 + aa, height - s + o], [x0, height + o], [x0 - aa, height - s + o]]));
+        }
 
         for (var i = 0, l = elements.length; i < l; ++i) {
             var e = elements[i];

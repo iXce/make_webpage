@@ -76,6 +76,8 @@ process_heatmap.heatmap_id = 1
 class XKCDCurve(list):
     def __init__(self, l):
         l2 = self._prune(l)
+        l2 = self._smooth(l2)
+        l2 = self._shorten(l2)
         super(XKCDCurve, self).__init__(l2)
 
     def _prune(self, l):
@@ -87,6 +89,15 @@ class XKCDCurve(list):
                 l2.append(l[i])
         return l2
 
+    def _shorten(self, l, max_count = 200):
+        if len(l) <= max_count: return l
+        else: return l[::len(l)/max_count]
+
+    def _smooth(self, l):
+        l2 = [l[0]] + l[:-1]
+        l3 = l[1:] + [l[-1]]
+        return map(lambda x,y,z: {"x": y["x"], "y": (float(x["y"])+float(y["y"])+float(z["y"]))/3}, l, l2, l3)
+
 XKCDCOLORS = ["steelblue", "red", '#bcbd22', '#c5b0d5', '#ff9896', '#dbdb8d', '#98df8a', '#7f7f7f', '#d62728', '#2ca02c', '#f7b6d2', '#c7c7c7', '#9edae', '#17becf', '#9467bd', '#ff7f0e', '#e377c2', '#8c564b', '#1f77b4', '#ffbb78', '#c49c94', '#aec7e8', "#6BAED6"]
 
 def process_xkcdplot(item, params):
@@ -94,11 +105,11 @@ def process_xkcdplot(item, params):
     item = sanitize_plot(item, params)
     # Now prepare curves
     if type(item["ydata"][0]) == list:
-        item["curves"] = [XKCDCurve([{"x": "%.5e" % float(item["xdata"][l][i]), "y": "%.5e" % float(item["ydata"][l][i])}
+        item["curves"] = [XKCDCurve([{"x": item["xdata"][l][i], "y": item["ydata"][l][i]}
                                      for i in range(0, len(item["ydata"][l]))])
                                     for l in range(len(item["ydata"]))]
     else:
-        item["curves"] = XKCDCurve([{"x": "%.5e" % float(item["xdata"][i]), "y": ".5e" % float(item["ydata"][i])}
+        item["curves"] = XKCDCurve([{"x": item["xdata"][i], "y": item["ydata"][i]}
                                     for i in range(len(item["ydata"]))])
     minxs = []
     maxxs = []
