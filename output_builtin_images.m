@@ -5,13 +5,17 @@ function [items, out_k] = output_builtin_images(items, out_dir, out_k)
     for i = 1:size(items, 1)
         for j = 1:size(items, 2)
             % 2-d or more numeric matrix : save image
+            if isstruct(items{i, j}) && isfield(items{i, j}, 'subpage')
+                [items{i, j}.subpage, out_k] = output_builtin_images(items{i, j}.subpage, out_dir, out_k);
+            end
             if isnumeric(items{i, j}) && ndims(items{i, j}) >= 2 && numel(items{i, j}) > 0
                 [items{i, j}, out_k] = image_to_file(items{i, j}, out_dir, out_k);
             elseif isstruct(items{i, j}) && isfield(items{i, j}, 'type') && isfield(items{i, j}, 'data') && strcmp(items{i, j}.type, 'image')
                 [items{i, j}, out_k] = image_to_file(items{i, j}.data, out_dir, out_k);
+            elseif isstruct(items{i, j}) && isfield(items{i, j}, 'type') && isfield(items{i, j}, 'stack') && strcmp(items{i, j}.type, 'stack')
+                [items{i, j}.stack, out_k] = output_builtin_images(items{i, j}.stack, out_dir, out_k);
             elseif iscell(items{i, j}) % cell ? recurse !
-                [modified, out_k] = output_builtin_images(items{i, j}, out_dir, out_k);
-                items{i, j} = modified;
+                [items{i, j}, out_k] = output_builtin_images(items{i, j}, out_dir, out_k);
             end
         end
     end
