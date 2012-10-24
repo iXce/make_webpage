@@ -18,7 +18,7 @@ def get_file_type_by_mime(fname):
 
 def get_file_type_by_ext(fname):
     ext = os.path.splitext(fname)[1]
-    if ext in ("webm",):
+    if ext in (".webm",):
         return "video"
     else:
         return "file"
