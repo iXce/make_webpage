@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os, simplejson
+import sys, os
 from webpagemaker import WebpageMaker
 
 if __name__ == "__main__":
@@ -11,6 +11,11 @@ if __name__ == "__main__":
     if not os.path.exists(jsonfile):
         print >> sys.stderr, "Missing json : %s" % jsonfile
         sys.exit(1)
-    jsondata = simplejson.load(open(jsonfile))
+    try:
+        import ujson
+        jsondata = ujson.load(open(jsonfile))
+    except ImportError:
+        import simplejson
+        jsondata = simplejson.load(open(jsonfile))
     maker = WebpageMaker(jsondata)
     maker.make()
