@@ -64,12 +64,17 @@ elseif ispc
     [status, result] = dos(cmdString);
 else
     % UNIX
-    [status ignore] = unix('which python2'); %#ok
-    if (status == 0)
-        cmdString = ['python2', cmdString];
+    if exist('/meleze/data0/local/bin/python2.7', 'file')
+        cmdString = ['/meleze/data0/local/bin/python2.7', cmdString];
         [status, result] = unix(cmdString);
     else
-        error(message('MATLAB:python:NoExecutable'));
+        [status ignore] = unix('which python2'); %#ok
+        if (status == 0)
+            cmdString = ['python2', cmdString];
+            [status, result] = unix(cmdString);
+        else
+            error(message('MATLAB:python:NoExecutable'));
+        end
     end
 end
 
