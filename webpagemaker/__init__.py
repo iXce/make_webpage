@@ -59,8 +59,9 @@ class WebpageMaker(object):
     def prepare_output(self):
         """Copy static stuff (bootstrap, stylesheet, javascript)"""
         target_dir = self.params["target_dir"]
-        if not os.path.isdir(target_dir):
-            os.makedirs(target_dir)
+        img_dir = os.path.join(self.params["target_dir"], "imgs")
+        if not os.path.isdir(img_dir):
+            os.makedirs(img_dir)
         static_dir = os.path.join(target_dir, "static")
         if DEBUG or not os.path.isdir(static_dir):
             if DEBUG and os.path.exists(static_dir): shutil.rmtree(static_dir)
