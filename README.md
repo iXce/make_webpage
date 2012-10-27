@@ -3,6 +3,23 @@ make_webpage
 
 A python-based toolbox for easily generating pretty webpages in MATLAB.
 
+Quick start
+===========
+
+MATLAB
+------
+``make_webpage(pagecell, '/path/to/output/directory/andmaybefilealso.html', COPYIMAGES);``
+with pagecell a 1-d or 2-d cell holdings objects as defined below, and
+COPYIMAGES being 0 or 1 depending on if you want the script to copy the images
+to a subdir of your webpage.
+
+CLI
+---
+``cat fileslist | ./clitohtml.py /path/to/output/directory/andmaybefilealso.html``
+The fileslist file is a text file which is parsed as a table : lines are rows,
+and space/tab separated chunks are columns. The clitohtml.py script takes some
+options, such as -c which enables the copy of images to the target directory.
+
 Currently supported objects
 ===========================
 - Images, as either MATLAB matrices or on-disk paths
