@@ -22,7 +22,8 @@ function make_webpage(items, target, copy_images, page_title, page_description)
         target_dir = target;
         target = fullfile(target_dir, 'index.html');
     end
-    out_dir = fullfile(target_dir, 'imgs', 'tmp');
+    [target_dir, target_name, target_ext] = fileparts(target);
+    out_dir = fullfile(target_dir, 'imgs', 'tmp', [target_name target_ext]);
     unix(sprintf('mkdir -p "%s"', out_dir));
 
     %%
