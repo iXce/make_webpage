@@ -45,7 +45,7 @@ class WebpageMaker(object):
     item_types = {}
     cur_subpage_suffix = 1
 
-    def __init__(self, data):
+    def __init__(self, data, packing = None):
         params = data['params']
         params['target'] = os.path.expanduser(params['target'])
         params['target_dir'] = os.path.join(os.path.normpath(os.path.expanduser(params['target_dir'])), '')
@@ -53,6 +53,9 @@ class WebpageMaker(object):
         params['WEB_ROOT'] = WEB_ROOT
         params['WEB_URL'] = WEB_URL
         params['copy_images'] = bool(params['copy_images'])
+        params['packed'] = False
+        if packing:
+            params.update(packing)
         self.params = params
         self.items = data['items']
 
@@ -156,7 +159,10 @@ dict, and possibly copy the file to the target directory"""
                           extensions = ['jinja2.ext.with_', 'jinja2.ext.do'],
                           trim_blocks = True)
         env.filters['inc'] = inc_filter
-        template = env.get_template('webpage.html')
+        if self.params['packed']:
+            template = env.get_template('webpage_packed.html')
+        else:
+            template = env.get_template('webpage.html')
         target_path = os.path.join(self.params['target_dir'], page.path)
         context = {"params": self.params, "page": page, "types": self.item_types}
         open(target_path, "w").write(template.render(context))
@@ -170,6 +176,10 @@ dict, and possibly copy the file to the target directory"""
         mainpage.title = self.params["title"]
         mainpage.description = self.params["description"]
         pages = [mainpage] + subpages
+        if self.params['packed']:
+            from packer import pack_items
+            for page in pages:
+                page.items = pack_items(page.items, self.params)
         return pages
 
     def make(self):

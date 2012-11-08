@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% if page.title %}{{ page.title }}{% else %}Visualization webpage{% endif %}{% if page.parent and params.title %} / {{ params.title }}{% endif %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        background: #FFF url("static/img/light_wool.png") repeat;
+{% if page.title %}
+        padding-top: 60px;
+{% endif %}
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="static/css/wswebpage.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    {% if page.title %}
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="{{ params.target_url }}">{% if page.parent and params.title %}{{ params.title }} : {% endif %}{{ page.title }}</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="container-fluid">
+
+{% if page.parent %}
+    <ul class="breadcrumb">
+{% for breadcrumb in page.breadcrumbs %}
+{% if not loop.last %}
+        <li><a href="{{ breadcrumb.path }}">{% if breadcrumb.title %}{{ breadcrumb.title }}{% else %}{{ breadcrumb.path }}{% endif %}</a><span class="divider">/</span></li>
+{% else %}
+        <li class="active">{% if breadcrumb.title %}{{ breadcrumb.title }}{% else %}{{ breadcrumb.path }}{% endif %}</li>
+{% endif %}
+{% endfor %}
+    </ul>
+{% endif %}
+
+      {% if page.description %}
+      <p>{{ page.description }}</p>
+      {% endif %}
+
+    <div class="row-fluid">
+        {% for item in page.items %}
+        <div style="position: absolute; top: {{ item.point.y }}px; left: {{ item.point.x }}px;">
+        {% include "item_template.html" %}
+        </div>
+        {% endfor %}
+    </div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+{% if types.image %}
+    <script src="static/js/jail.min.js"></script>
+{% endif %}
+{% if types.heatmap or types.xkcdplot %}
+    <script src="static/js/d3.v2.min.js"></script>
+{% endif %}
+{% if types.xkcdplot %}
+    <script src="static/js/xkcd.js"></script>
+{% endif %}
+{% if types.heatmap %}
+    <script src="static/js/heatmap.js"></script>
+{% endif %}
+{% if types.comment %}
+    <script src="static/js/remotecomment.js"></script>
+{% endif %}
+{% if types.plot or types.bar or types.dots %}
+    <script src="static/js/raphael-min.js"></script>
+    <script src="static/js/g.raphael-min.js"></script>
+{% endif %}
+{% if types.plot %}
+    <script src="static/js/g.line-min.js"></script>
+{% endif %}
+    <script type="text/javascript">
+{% if types.image %}
+        $('img:not(.nojail)').jail({offset:800,placeholder:'static/img/blank.gif'{% if types.stack %},loadHiddenImages:true{% endif %}});
+{% endif %}
+{% do 'itemid'|inc(0, None, True) %}
+{% for item0 in page.items %}
+{% if item0 is sequence and not item0 is string and not item0 is mapping %}
+{% for item in item0 %}
+{% include "script_type_switch.html" %}
+{% endfor %}
+{% else %}
+{% with item = item0 %}
+{% include "script_type_switch.html" %}
+{% endwith %}
+{% endif %}
+{% endfor %}
+
+    </script>
+  </body>
+</html>
+
