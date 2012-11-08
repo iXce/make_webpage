@@ -1,8 +1,8 @@
 var r = Raphael("plotholder{{ itemid }}");
 var div = $("#plotholder{{ itemid }}");
 var chart = r.linechart(
-    10, 10,
-    div.width() - 10, div.height() - 20,
+    20, 10,
+    div.width() - 20, div.height() - 20,
     {{ item.xdata }},
     {{ item.ydata }},
     {
