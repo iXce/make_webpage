@@ -7,11 +7,11 @@ var chart = r.linechart(
     {{ item.ydata }},
     {
        axis: "0 0 1 1",
-       smooth: true,
+       smooth: {% if item.smooth %}{{ item.smooth }}{% else %}true{% endif %},
        {% if item.options %}{{ item.options }}{% endif %}
      });
 {% if item.labels %}
-var labels = [{% for label in item.labels %}"{{ label }}", {% endfor %}];
+var labels = [{% if item.labels is string %}"{{ item.labels }}"{% else %}{% for label in item.labels %}"{{ label }}", {% endfor %}{% endif %}];
 chart.labels = r.set();
 var x = 15; var h = 5;
 for( var i = 0; i < labels.length; ++i ) {
