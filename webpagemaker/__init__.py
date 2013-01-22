@@ -77,13 +77,22 @@ class WebpageMaker(object):
         if type(item) in (str,unicode) and os.path.exists(item):
             if not orig_item: orig_item = {}
             newitem = {"type": get_file_type(item), "mime": get_mimetype(item)}
+            print orig_item
             if "width" in orig_item: newitem["width"] = orig_item["width"]
             if "height" in orig_item: newitem["height"] = orig_item["height"]
-            if newitem["type"] == "image" and "width" not in newitem and "height" not in newitem:
+            if newitem["type"] == "image" and ("width" not in newitem or "height" not in newitem):
                 content_type, width, height = getImageInfo(open(item).read())
                 if content_type and width and height:
-                    newitem["width"] = width
-                    newitem["height"] = height
+                    try:
+                        if "width" not in newitem and "height" not in newitem:
+                            newitem["width"] = width
+                            newitem["height"] = height
+                        elif "width" not in newitem:
+                            newitem["width"] = width * newitem["height"] / height
+                        else:
+                            newitem["height"] = height * newitem["width"] / width
+                    except TypeError:
+                        pass
             if self.params["WEB_ROOT"] in item:
                 newitem["url"] = item.replace(self.params["WEB_ROOT"],
                                               self.params["WEB_URL"])
