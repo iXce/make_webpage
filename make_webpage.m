@@ -1,4 +1,4 @@
-function make_webpage(items, target, copy_images, page_title, page_description)
+function items = make_webpage(items, target, copy_images, page_title, page_description)
     % make_webpage(items, target, copy_images, page_title, page_description)
     % Automagically build a pretty webpage from a set of random items
     % Simple usage : simply pass a 1-dim or 2-dims cell array containing
