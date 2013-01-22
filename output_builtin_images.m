@@ -10,7 +10,7 @@ function [items, out_k] = output_builtin_images(items, out_dir, out_k)
             end
             if isnumeric(items{i, j}) && ndims(items{i, j}) >= 2 && numel(items{i, j}) > 0
                 [items{i, j}, out_k] = image_to_file(items{i, j}, out_dir, out_k);
-            elseif isstruct(items{i, j}) && isfield(items{i, j}, 'type') && isfield(items{i, j}, 'data') && strcmp(items{i, j}.type, 'image')
+            elseif isstruct(items{i, j}) && isfield(items{i, j}, 'type') && isfield(items{i, j}, 'data') && strcmp(items{i, j}.type, 'image') && ~isempty(items{i, j}.data)
                 [items{i, j}.url, out_k] = image_to_file(items{i, j}.data, out_dir, out_k);
                 items{i, j}.data = [];
             elseif isstruct(items{i, j}) && isfield(items{i, j}, 'type') && isfield(items{i, j}, 'stack') && strcmp(items{i, j}.type, 'stack')
