@@ -77,7 +77,6 @@ class WebpageMaker(object):
         if type(item) in (str,unicode) and os.path.exists(item):
             if not orig_item: orig_item = {}
             newitem = {"type": get_file_type(item), "mime": get_mimetype(item)}
-            print orig_item
             if "width" in orig_item: newitem["width"] = orig_item["width"]
             if "height" in orig_item: newitem["height"] = orig_item["height"]
             if newitem["type"] == "image" and ("width" not in newitem or "height" not in newitem):
