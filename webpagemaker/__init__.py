@@ -98,7 +98,7 @@ class WebpageMaker(object):
             elif self.params["copy_images"]:
                 new_name = item.replace(os.sep, "_")
                 new_path = os.path.join(self.params["target_dir"], "imgs", new_name)
-                if not DEBUG: shutil.copy(item, new_path)
+                if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(item) > os.path.getmtime(new_path))): shutil.copy(item, new_path)
                 newitem["url"] = os.path.join("imgs", new_name)
             else:
                 newitem["url"] = item.replace(self.params["target_dir"], "")
