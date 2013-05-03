@@ -14,6 +14,8 @@ if __name__ == "__main__":
     parser.add_option("-c", "--copy-images", action = "store_true",
                       dest = "copy_images", default = False,
                       help = "copy images to target folder")
+    parser.add_option("--paged", type = "int", dest = "paged", default = 0)
+    parser.add_option("--header-lines", type = "int", dest = "header_lines", default = 0)
 
     (options, args) = parser.parse_args()
     if len(args) != 1:
@@ -31,7 +33,9 @@ if __name__ == "__main__":
               "target": target,
               "title": options.title,
               "description": options.description,
-              "copy_images": options.copy_images}
+              "copy_images": options.copy_images,
+              "paged": options.paged,
+              "header_lines": options.header_lines}
     items = []
     for line in sys.stdin:
         items.append(line.strip().split())

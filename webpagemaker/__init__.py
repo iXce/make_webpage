@@ -1,5 +1,6 @@
 import sys, os
 import shutil
+import math
 
 from jinja2 import Template, Environment, FileSystemLoader
 
@@ -180,10 +181,42 @@ dict, and possibly copy the file to the target directory"""
         items = self.process_item(self.items)
         basename = os.path.basename(self.params['target'])
         mainpage = Page(basename, None)
-        mainpage.items, subpages = self.find_subpages(items, basename, 0, mainpage)
+        mainpage.items, extra_pages = self.find_subpages(items, basename, 0, mainpage)
         mainpage.title = self.params["title"]
         mainpage.description = self.params["description"]
-        pages = [mainpage] + subpages
+        if self.params['paged']:
+            n_per_page = self.params['paged']
+            n_header_lines = self.params['header_lines'] if 'header_lines' in self.params else 0
+            items = mainpage.items
+            n_lines = len(items)
+            if n_lines > n_per_page + n_header_lines:
+                header = items[0:n_header_lines]
+                n_pages = int(math.ceil(float(n_lines - n_header_lines) / n_per_page))
+                paged_format = "%s.paged%08d.html"
+                for i in range(n_pages):
+                    start = n_header_lines+i*n_per_page
+                    page_items = header + items[start:(start+n_per_page)]
+                    prev_paged = paged_format % (basename, i-1) if i > 1 else (basename if i == 1 else None)
+                    next_paged = paged_format % (basename, i+1) if (i+1) < n_pages else None
+                    links = []
+                    if prev_paged: links.append("<a href=\"%s\">&lt;&lt;</a>" % prev_paged)
+                    for k in range(n_pages):
+                        k_paged = paged_format % (basename, k) if k > 0 else basename
+                        if k == i:
+                            links.append("<strong>[%d]</strong>" % k)
+                        else:
+                            links.append("<a href=\"%s\">%d</a>" % (k_paged, k))
+                    if next_paged: links.append("<a href=\"%s\">&gt;&gt;</a>" % next_paged)
+                    page_items.append("<span class=\"paged_links\">%s</span>" % "".join(links))
+                    if i == 0:
+                        mainpage.items = page_items
+                    else:
+                        pagedpage = Page(paged_format % (basename, i), None)
+                        pagedpage.items = page_items
+                        pagedpage.title = self.params["title"]
+                        pagedpage.description = self.params["description"]
+                        extra_pages.append(pagedpage)
+        pages = [mainpage] + extra_pages
         if self.params['packed']:
             from packer import pack_items
             for page in pages:

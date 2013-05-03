@@ -1,4 +1,4 @@
-function items = make_webpage(items, target, copy_images, page_title, page_description)
+function items = make_webpage(items, target, params, page_title, page_description)
     % make_webpage(items, target, copy_images, page_title, page_description)
     % Automagically build a pretty webpage from a set of random items
     % Simple usage : simply pass a 1-dim or 2-dims cell array containing
@@ -6,9 +6,13 @@ function items = make_webpage(items, target, copy_images, page_title, page_descr
     % (as matrices), or more complicated structures (to be defined later)
     % You can also generate subpages by passing such a cell array as one item
 
-    if nargin < 3, copy_images = true; end
-    if nargin < 4, page_title = ''; end
-    if nargin < 5, page_description = ''; end
+    if nargin < 3, params = []; end
+    if nargin >= 3 && ~isstruct(params), newparams.copy_images = params; params = newparams; end
+    if nargin >= 4, params.title = page_title; end
+    if nargin >= 5, params.description = page_description; end
+
+    if ~isfield(params, 'paged'), params.paged = false; end
+    if ~isfield(params, 'packed'), params.packed = false; end
 
     %%
     % Update path
@@ -33,11 +37,9 @@ function items = make_webpage(items, target, copy_images, page_title, page_descr
     %%
     % Save as json and run python
     out_json = fullfile(target_dir, 'webpage.json');
-    webpage.params.copy_images = copy_images;
+    webpage.params = params;
     webpage.params.target = target;
     webpage.params.target_dir = target_dir;
-    webpage.params.title = page_title;
-    webpage.params.description = page_description;
     webpage.items = items;
     savejson('', webpage, 'FileName', out_json, 'ForceRootName', 0);
     pypath = fullfile(curdir, 'jsontohtml.py');

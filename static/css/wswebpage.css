@@ -87,3 +87,8 @@ img {
     stroke: white;
     stroke-width: 6px;
 }
+
+span.paged_links a, span.paged_links strong {
+    display: inline;
+    margin-right: 4px;
+}
