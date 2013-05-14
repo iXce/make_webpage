@@ -2,7 +2,7 @@ import mimetypes, os
 
 def get_mimetype(fname):
     mimetype, _ = mimetypes.guess_type(fname)
-    if not mimetype and os.path.splitext(fname)[1] == "webm":
+    if not mimetype and os.path.splitext(fname)[1] == ".webm":
         mimetype ="video/webm"
     return mimetype
 
