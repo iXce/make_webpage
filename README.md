@@ -41,6 +41,7 @@ Currently supported objects
 
 Other features
 ==============
+- Subpages (again)
 - Automatic pagination
 
 Planned features
@@ -54,11 +55,18 @@ Images & videos
 ---------------
 Either just a path (or possibly just a matrix for images), or make a struct
 with .type = 'image' (or 'video') and .url = 'on_disk_path_to_image'
+
+If you want to display a matrix in your code as an image and want to specify
+additional parameters make a struct with .type = 'image' and use the .data
+field instead of the .url one. The image will be saved to disk with reasonable
+settings and everything else will be transparent.
+
 Currently only .mp4 and .webm video should correctly work. Might require some
 brother-specific tricks.
-You can specify the width and height at which the image should be displayed by
-using the .width and .height fields. If you only provide one, the toolbox will
-try to preserve the aspect ratio.
+
+You can specify the width and height at which the image or video should be
+displayed by using the .width and .height fields. If you only specify one of
+them, the toolbox will try to preserve the original aspect ratio.
 
 Image thumbnails & lightbox popups
 ----------------------------------
@@ -69,7 +77,9 @@ resolution image come up when you click on it.
 
 Comments
 --------
-Just a struct with .type = 'comment'
+Just a struct with .type = 'comment'. Note that this service is using an
+external server running a tiny Django app which serves these comments, server
+which might go AWOL at any time with your comments.
 
 Plots
 -----
