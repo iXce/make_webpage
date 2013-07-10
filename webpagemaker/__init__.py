@@ -117,7 +117,7 @@ class WebpageMaker(object):
                 if "popup" in item:
                     item["fullurl"] = item["url"]
                     item["url"] = make_thumbnail(item)
-                    item["type"] = "imagepopup"
+                    item["type"] = "imagegallery" if item["popup"] == "gallery" else "imagepopup"
                 return item
             elif item["type"] == "stack":
                 item["stack"] = self.process_items(item["stack"])

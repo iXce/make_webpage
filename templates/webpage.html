@@ -34,7 +34,6 @@
     {% endif %}
 
     <div class="container-fluid">
-
 {% if page.parent %}
     <ul class="breadcrumb">
 {% for breadcrumb in page.breadcrumbs %}
@@ -52,6 +51,7 @@
       {% endif %}
 
     <div class="row-fluid">
+{% include "webpage_precontent.html" %}
         <table>
         {% for item0 in page.items %}
             <tr>
@@ -67,6 +67,7 @@
             </tr>
         {% endfor %}
         </table>
+{% include "webpage_postcontent.html" %}
     </div>
 
     </div> <!-- /container -->

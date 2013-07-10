@@ -3,18 +3,39 @@
 {% if types.image %}
     <script src="static/js/jail.min.js"></script>
 {% endif %}
-{% if types.imagepopup %}
+{% if types.imagepopup or types.imagegallery %}
     <script src="static/js/magnific-popup.js"></script>
     <script type="text/javascript">
-    $('.image-popup').magnificPopup({ 
-      type: 'image',
-      mainClass: 'mfp-with-zoom',
-      zoom: {
-        enabled: true,
-        duration: 300,
-        easing: 'ease-in-out',
-      }
-    });
+        $(document).ready(function() {
+            $('.image-popup').magnificPopup({
+              type: 'image',
+              mainClass: 'mfp-with-zoom',
+              zoom: {
+                enabled: true,
+                duration: 300,
+                easing: 'ease-in-out',
+              }
+            });
+            $('.image-gallery').magnificPopup({
+              delegate: 'a.image-gallery-popup',
+              type: 'image',
+              mainClass: 'mfp-with-zoom mfp-img-mobile',
+              closeOnContentClick: true,
+              image: {
+                verticalFit: true,
+              },
+              gallery: {
+                enabled: true,
+                navigateByImgClick: false,
+                preload: [2, 3]
+              },
+              zoom: {
+                enabled: true,
+                duration: 300,
+                easing: 'ease-in-out',
+              },
+            });
+        });
     </script>
 {% endif %}
 {% if types.heatmap or types.xkcdplot %}
@@ -37,8 +58,8 @@
     <script src="static/js/g.line-min.js"></script>
 {% endif %}
     <script type="text/javascript">
-{% if types.image or types.imagepopup %}
-        $('img:not(.nojail)').jail({offset:800,placeholder:'static/img/blank.gif'{% if types.stack or types.imagepopup %},loadHiddenImages:true{% endif %}});
+{% if types.image or types.imagepopup or types.imagegallery %}
+        $('img:not(.nojail)').jail({offset:800,placeholder:'static/img/blank.gif'{% if types.stack or types.imagepopup or types.imagesgallery %},loadHiddenImages:true{% endif %}});
 {% endif %}
 {% do 'itemid'|inc(0, None, True) %}
 {% for item0 in page.items %}

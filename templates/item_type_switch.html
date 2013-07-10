@@ -18,6 +18,8 @@
     <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item.text }}</span>
 {% elif item.type == "imagepopup" %}
     {% include "item_imagepopup.html" %}
+{% elif item.type == "imagegallery" %}
+    {% include "item_imagegallery.html" %}
 {% elif item != None %}
     <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item }}</span>
 {% endif %}
