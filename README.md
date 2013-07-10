@@ -147,6 +147,7 @@ script to serve gzipped json files if the browser supports it. That means that
 you can output json files in params["target_dir"]/json plus their gzipped
 version (with an extra .gz extension), and use
 static/php/servejson.php?json=YOURFILE.json as your json file URL.
+
 Please note that if you have more control on your webserver than I do, you can
 achieve just the same thing without any PHP by using the Apache (or equivalent)
 DEFLATE module and add application/json to the supported mime types that can be
@@ -198,6 +199,7 @@ Dependencies (shipped in this package)
 - Raphael/gRaphael for plots http://raphaeljs.com/ and http://g.raphaeljs.com/
 - JAIL for lazy loading http://www.sebastianoarmelibattana.com/projects/jail
 - d3.js for visualizations http://d3js.org/
+- Magnific Popup for lightboxes http://dimsemenov.com/plugins/magnific-popup/
 
 References
 ==========
