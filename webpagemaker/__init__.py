@@ -5,6 +5,7 @@ import math
 from jinja2 import Template, Environment, FileSystemLoader
 
 from jinjafilters import inc_filter
+from thumbnail import make_thumbnail
 from getimageinfo import getImageInfo
 from utils import get_file_type, get_mimetype
 from items import item_processors
@@ -93,6 +94,7 @@ class WebpageMaker(object):
                             newitem["height"] = height * newitem["width"] / width
                     except TypeError:
                         pass
+            newitem["rawpath"] = item
             if self.params["WEB_ROOT"] in item:
                 newitem["url"] = item.replace(self.params["WEB_ROOT"],
                                               self.params["WEB_URL"])
@@ -100,6 +102,7 @@ class WebpageMaker(object):
                 new_name = item.replace(os.sep, "_")
                 new_path = os.path.join(self.params["target_dir"], "imgs", new_name)
                 if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(item) > os.path.getmtime(new_path))): shutil.copy(item, new_path)
+                newitem["rawpath"] = new_path
                 newitem["url"] = os.path.join("imgs", new_name)
             else:
                 newitem["url"] = item.replace(self.params["target_dir"], "")
@@ -111,6 +114,10 @@ class WebpageMaker(object):
                     item.update(processed)
                 else:
                     item["url"] = processed
+                if "popup" in item:
+                    item["fullurl"] = item["url"]
+                    item["url"] = make_thumbnail(item)
+                    item["type"] = "imagepopup"
                 return item
             elif item["type"] == "stack":
                 item["stack"] = self.process_items(item["stack"])

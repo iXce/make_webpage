@@ -16,6 +16,8 @@
     <a href="{{ item.url }}"{% if item.attrs %} {{ item.attrs }}{% endif %}>Subpage</a>
 {% elif item.type == "text" %}
     <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item.text }}</span>
+{% elif item.type == "imagepopup" %}
+    {% include "item_imagepopup.html" %}
 {% elif item != None %}
     <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item }}</span>
 {% endif %}
