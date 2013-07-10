@@ -1,5 +1,5 @@
 function items = make_webpage(items, target, params, page_title, page_description)
-    % make_webpage(items, target, copy_images, page_title, page_description)
+    % make_webpage(items, target, params, page_title, page_description)
     % Automagically build a pretty webpage from a set of random items
     % Simple usage : simply pass a 1-dim or 2-dims cell array containing
     % your items which can be either text, image paths, video paths, images
@@ -11,6 +11,9 @@ function items = make_webpage(items, target, params, page_title, page_descriptio
     if nargin >= 4, params.title = page_title; end
     if nargin >= 5, params.description = page_description; end
 
+    if ~isfield(params, 'copy_images'), params.copy_images = 0; end
+    if ~isfield(params, 'title'), params.title = ''; end
+    if ~isfield(params, 'description'), params.description = ''; end
     if ~isfield(params, 'paged'), params.paged = false; end
     if ~isfield(params, 'packed'), params.packed = false; end
 
