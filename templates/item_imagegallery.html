@@ -1,4 +1,4 @@
-<a href="{{ item.fullurl }}" class="image-gallery-popup">
+<a href="{{ item.fullurl }}" title="{% if item.title %}{{ item.title }}{% endif %}" class="image-gallery-popup">
 {% include "item_image.html" %}
 <div style="display: none;">
     <img data-src="{{ item.fullurl }}" />

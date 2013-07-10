@@ -27,7 +27,10 @@
               gallery: {
                 enabled: true,
                 navigateByImgClick: false,
-                preload: [2, 3]
+                preload: [2, 3],
+                titleSrc: function(item) {
+                    return item.el.attr('title');
+                }
               },
               zoom: {
                 enabled: true,
