@@ -8,10 +8,17 @@ Quick start
 
 MATLAB
 ------
-    make_webpage(pagecell, '/path/to/output/directory/andmaybefilealso.html', COPYIMAGES);
+    make_webpage(pagecell, '/path/to/output/directory/andmaybefilealso.html', params);
 with pagecell a 1-d or 2-d cell holdings objects as defined below, and
-COPYIMAGES being 0 or 1 depending on if you want the script to copy the images
-to a subdir of your webpage.
+params being a struct, which accept the following parameters:
+  params.copy_images: 0 or 1 depending on if you want the script to copy the images
+                      to a subdir of your webpage.
+  params.title: the page title
+  params.description: the page description
+  params.paged: the number of items per page (do not specify it if you want a
+                single page)
+  params.header_lines: the number of lines from the top of the cell to
+                       replicate for each page produced by automatic pagination
 
 CLI
 ---
@@ -23,6 +30,7 @@ options, such as -c which enables the copy of images to the target directory.
 Currently supported objects
 ===========================
 - Images, as either MATLAB matrices or on-disk paths
+- Thumbnails & lightbox popups for images
 - Videos, as on-disk paths
 - Text
 - Heatmaps
@@ -30,6 +38,10 @@ Currently supported objects
 - Line plots
 - Subpages
 - Stacks
+
+Other features
+==============
+- Automatic pagination
 
 Planned features
 ================
@@ -44,6 +56,16 @@ Either just a path (or possibly just a matrix for images), or make a struct
 with .type = 'image' (or 'video') and .url = 'on_disk_path_to_image'
 Currently only .mp4 and .webm video should correctly work. Might require some
 brother-specific tricks.
+You can specify the width and height at which the image should be displayed by
+using the .width and .height fields. If you only provide one, the toolbox will
+try to preserve the aspect ratio.
+
+Image thumbnails & lightbox popups
+----------------------------------
+Set the .popup field to something (1 is good enough) to have the image being
+displayed as a thumbnail (which will be produced at the size specified by
+.width/.height (same as for images/videos)) and a lightbox with the full
+resolution image come up when you click on it.
 
 Comments
 --------
@@ -83,6 +105,12 @@ Stacks
 A stack of items on top of each other, with a set of tabs to switch between
 items. Define it as a struct with .type = 'stack', .stack = cellofitems and
 .labels = cellofstrings
+
+Pagination
+==========
+See the params.paged and params.header_lines parameters described at the top of
+the page. The same parameters are also accepted through --paged and
+--header_lines CLI options.
 
 How to add a new object type
 ============================
