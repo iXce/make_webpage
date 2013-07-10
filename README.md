@@ -30,7 +30,7 @@ options, such as -c which enables the copy of images to the target directory.
 Currently supported objects
 ===========================
 - Images, as either MATLAB matrices or on-disk paths
-- Thumbnails & lightbox popups for images
+- Thumbnails & lightbox popups for images, or as galleries
 - Videos, as on-disk paths
 - Text
 - Heatmaps
@@ -74,6 +74,13 @@ Set the .popup field to something (1 is good enough) to have the image being
 displayed as a thumbnail (which will be produced at the size specified by
 .width/.height (same as for images/videos)) and a lightbox with the full
 resolution image come up when you click on it.
+
+Galleries
+---------
+As for thumbnails and lightbox popus, set the .popup field to 'gallery'. You
+can specify a title to display through the .title field. All images will be
+displayed in a single gallery per page, which can be browsed by left/right
+arrows or visual buttons.
 
 Comments
 --------
