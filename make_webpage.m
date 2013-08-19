@@ -23,6 +23,10 @@ function items = make_webpage(items, target, params, page_title, page_descriptio
     addpath(genpath(fullfile(curdir, 'jsonlab')));
 
     %%
+    % Realize environment expansion (such as ~) on target path
+    [~, target] = unix(['echo -n ' target]);
+
+    %%
     % Make output directory and matrix image output directory
     [target_dir, target_name, target_ext] = fileparts(target);
     if isempty(target_ext) % no extension : this is a directory path
