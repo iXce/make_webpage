@@ -53,86 +53,87 @@ How to define objects
 
 Text
 ----
-Either just a standard MATLAB string or a struct with .type = 'text' an
-.text = 'yourstring'
+Either just a standard MATLAB string or a struct with `.type = 'text'` an
+`.text = 'yourstring'`
 
 Images & videos
 ---------------
 Either just a path (or possibly just a matrix for images), or make a struct
-with .type = 'image' (or 'video') and .url = 'on_disk_path_to_image'
+with `.type = 'image'` (or `'video'`) and `.url = 'on_disk_path_to_image'`
 
 If you want to display a matrix in your code as an image and want to specify
-additional parameters make a struct with .type = 'image' and use the .data
-field instead of the .url one. The image will be saved to disk with reasonable
-settings and everything else will be transparent.
+additional parameters make a struct with `.type = 'image'` and use the `.data`
+field instead of the `.url` one. The image will be saved to disk with
+reasonable settings and everything else will be transparent.
 
 Currently only .mp4 and .webm video should correctly work. Might require some
-brother-specific tricks.
+browser-specific tricks.
 
 You can specify the width and height at which the image or video should be
-displayed by using the .width and .height fields. If you only specify one of
-them, the toolbox will try to preserve the original aspect ratio.
+displayed by using the `.width` and `.height` fields. If you only specify one
+of them, the toolbox will try to preserve the original aspect ratio.
 
 Image thumbnails & lightbox popups
 ----------------------------------
-Set the .popup field to something (1 is good enough) to have the image being
+Set the `.popup` field to something (1 is good enough) to have the image being
 displayed as a thumbnail (which will be produced at the size specified by
-.width/.height (same as for images/videos)) and a lightbox with the full
+`.width`/`.height` (same as for images/videos)) and a lightbox with the full
 resolution image come up when you click on it.
 
 Galleries
 ---------
-As for thumbnails and lightbox popus, set the .popup field to 'gallery'. You
-can specify a title to display through the .title field. All images will be
-displayed in a single gallery per page, which can be browsed by left/right
+As for thumbnails and lightbox popus, set the `.popup` field to `'gallery'`.
+You can specify a title to display through the `.title` field. All images will
+be displayed in a single gallery per page, which can be browsed by left/right
 arrows or visual buttons.
 
 Comments
 --------
-Just a struct with .type = 'comment'. Note that this service is using an
+Just a struct with `.type = 'comment'`. Note that this service is using an
 external server running a tiny Django app which serves these comments, server
 which might go AWOL at any time with your comments.
 
 Plots
 -----
-Struct with .type = 'plot', .xdata = 1d or 2d matrix of values (2d if multiple
-plots), same for .ydata
+Struct with `.type = 'plot'`, `.xdata =` 1d or 2d matrix of values (2d if
+multiple plots), same for `.ydata`
 
 XKCD-like plots
 ---------------
-Struct with .type = 'xkcdplot', .xdata = 1d or 2d matrix of values (2d if
-multiple plots), same for .ydata. You can specify .minx, .maxx, .miny, .maxy,
-.xlabel, .ylabel, .title fields (min/max* handle the axis limits, the other are
-the axis labels and plot title). You can also specify curves colors through
-.colors = a cell array of colors (one per curve).
+Struct with `.type = 'xkcdplot'`, `.xdata =` 1d or 2d matrix of values (2d if
+multiple plots), same for `.ydata`. You can specify `.minx`, `.maxx`, `.miny`, `.maxy`,
+`.xlabel`, `.ylabel`, `.title` fields (min/max* handle the axis limits, the
+other are the axis labels and plot title). You can also specify curves colors
+through `.colors =` a cell array of colors (one per curve).
 
 Heatmap
 -------
-Struct with .type = 'heatmap', .data = yourdatamatrix. Produces a nice colored
-heatmap with value-at-cursor-position tooltips. You can specify a custom
-colormap by putting a cell of strings in .colormap field. The default colormap
-is not the usual rainbow colormap, but rather one from [1].
+Struct with `.type = 'heatmap'`, `.data = yourdatamatrix`. Produces a nice
+colored heatmap with value-at-cursor-position tooltips. You can specify a
+custom colormap by putting a cell of strings in `.colormap` field. The default
+colormap is not the usual rainbow colormap, but rather one from [1].
 
 Subpages
 --------
 Just put a cell into a 2d cell (putting a cell into a 1d cell will lead to a 2d
 table page), which will make a "Subpage" link in the current page, or put your
-subpage cell as a .subpage field of another object, on which the link to the
+subpage cell as a `.subpage` field of another object, on which the link to the
 subpage will be added. If you use the latter, you can also specify the
-.subpage_title and .subpage_description fields. If you want to make a text link,
-make your item as before plus with .type = 'text' and .text = 'the-link-text'.
+`.subpage_title` and `.subpage_description` fields. If you want to make a text
+link, make your item as before plus with `.type = 'text'` and `.text =
+'the-link-text'` (as for a simple text object).
 
 Stacks
 ------
 A stack of items on top of each other, with a set of tabs to switch between
-items. Define it as a struct with .type = 'stack', .stack = cellofitems and
-.labels = cellofstrings
+items. Define it as a struct with `.type = 'stack'`, `.stack =` cellofitems and
+`.labels =` cellofstrings
 
 Pagination
 ==========
-See the params.paged and params.header_lines parameters described at the top of
-the page. The same parameters are also accepted through --paged and
---header_lines CLI options.
+See the `params.paged` and `params.header_lines` parameters described at the
+top of the page. The same parameters are also accepted through `--paged` and
+`--header_lines` CLI options.
 
 How to add a new object type
 ============================
