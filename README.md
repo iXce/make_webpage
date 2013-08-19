@@ -51,6 +51,11 @@ Planned features
 How to define objects
 =====================
 
+Text
+----
+Either just a standard MATLAB string or a struct with .type = 'text' an
+.text = 'yourstring'
+
 Images & videos
 ---------------
 Either just a path (or possibly just a matrix for images), or make a struct
