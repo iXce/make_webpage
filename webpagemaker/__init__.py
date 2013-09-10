@@ -114,7 +114,7 @@ class WebpageMaker(object):
                     item.update(processed)
                 else:
                     item["url"] = processed
-                if "popup" in item:
+                if "popup" in item and "rawpath" in item:
                     item["fullurl"] = item["url"]
                     item["url"] = make_thumbnail(item)
                     item["type"] = "imagegallery" if item["popup"] == "gallery" else "imagepopup"
