@@ -76,7 +76,7 @@ class WebpageMaker(object):
     def process_item(self, item, orig_item = None):
         if isinstance(item, dict) and "subpage" in item:
             item["subpage"] = self.process_item(item["subpage"])
-        if type(item) in (str,unicode) and os.path.exists(item):
+        if type(item) in (str,unicode) and os.path.exists(item) and not os.path.isdir(item):
             if not orig_item: orig_item = {}
             newitem = {"type": get_file_type(item), "mime": get_mimetype(item)}
             if "width" in orig_item: newitem["width"] = orig_item["width"]
