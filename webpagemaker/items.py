@@ -1,13 +1,16 @@
 import os
 import simplejson
 import gzip
+import collections
 from PIL import Image
 
 from color_interpolation import LinearColorMap
 
 def flatten_singletons(l):
     first = l[0]
-    if isinstance(first, list) and len(first) == 1:
+    if not isinstance(first, collections.Iterable):
+        return [v for v in l]
+    elif len(first) == 1:
         return [v[0] for v in l]
     else:
         return [flatten_singletons(v) for v in l]
