@@ -28,9 +28,9 @@ def sanitize_plot(item, params):
     if "labels" in item and len(ydata) != len(item["labels"]):
         raise ValueError, "you must either provide a label for each ydata " \
                           "values list or no label at all"
-    if "colors" in item and len(ydata) != len(item["colors"]):
-        raise ValueError, "you must either provide a color for each ydata " \
-                          "values list or no color at all"
+    if "colors" in item and len(ydata) > len(item["colors"]):
+        raise ValueError, "you must either provide a color for at least "\
+                          "each ydata values list or no color at all"
     allseries = zip(xdata, ydata)
     data = []
     for k, (xdata, ydata) in enumerate(allseries):
