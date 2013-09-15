@@ -54,6 +54,7 @@
     <div class="row-fluid">
         {% for item in page.items %}
         <div style="position: absolute; top: {{ item.point.y }}px; left: {{ item.point.x }}px;">
+        {% set itemid = 'itemid'|inc %}
         {% include "item_template.html" %}
         </div>
         {% endfor %}
