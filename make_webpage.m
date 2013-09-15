@@ -25,6 +25,7 @@ function items = make_webpage(items, target, params, page_title, page_descriptio
     %%
     % Realize environment expansion (such as ~) on target path
     [~, target] = unix(['echo -n ' target]);
+    target = strtrim(target);
 
     %%
     % Make output directory and matrix image output directory
