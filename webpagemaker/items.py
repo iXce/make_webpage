@@ -30,11 +30,12 @@ def sanitize_plot(item, params):
                           "values list or no label at all"
     allseries = zip(xdata, ydata)
     data = []
-    for i, (xdata, ydata) in enumerate(allseries):
-        data.append({"key": item["labels"][i] if "labels" in item else "",
-                     "values": [{"x": xdata[i], "y": ydata[i]}
-                                for i in range(len(xdata))]
-                    })
+    for k, (xdata, ydata) in enumerate(allseries):
+        entry = {"values": [{"x": xdata[i], "y": ydata[i]}
+                            for i in range(len(xdata))]
+                }
+        entry["key"] = item["labels"][k] if "labels" in item else "Set %d" % k
+        data.append(entry)
     item["data"] = simplejson.dumps(data)
     item["tdattrs"] = "class = \"plotholder\" " + item["attrs"] if "attrs" in item else ""
     return item
