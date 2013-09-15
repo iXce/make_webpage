@@ -28,6 +28,9 @@ def sanitize_plot(item, params):
     if "labels" in item and len(ydata) != len(item["labels"]):
         raise ValueError, "you must either provide a label for each ydata " \
                           "values list or no label at all"
+    if "colors" in item and len(ydata) != len(item["colors"]):
+        raise ValueError, "you must either provide a color for each ydata " \
+                          "values list or no color at all"
     allseries = zip(xdata, ydata)
     data = []
     for k, (xdata, ydata) in enumerate(allseries):
@@ -35,6 +38,8 @@ def sanitize_plot(item, params):
                             for i in range(len(xdata))]
                 }
         entry["key"] = item["labels"][k] if "labels" in item else "Set %d" % k
+        if "colors" in item:
+            entry["color"] = item["colors"][k]
         data.append(entry)
     item["data"] = simplejson.dumps(data)
     item["tdattrs"] = "class = \"plotholder\" " + item["attrs"] if "attrs" in item else ""
