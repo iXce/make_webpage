@@ -7,7 +7,8 @@ nv.addGraph(function() {
         {% if not item.tooltips %}tooltips: false,{% endif %}
     });
 
-    chart.margin({left: 100});
+    {% if item.title %}chart.margin({top: 80, left: 100});
+    {% else %}chart.margin({left: 100});{% endif%}
 
     {% if item.xlabel %}chart.xAxis
             .axisLabel("{{ item.xlabel }}");{% endif%}
@@ -22,6 +23,15 @@ nv.addGraph(function() {
     d3.select("#td{{ itemid }} svg")
         .datum({{ item.data }})
         .transition().duration(500).call(chart);
+
+    {% if item.title %}
+    d3.select('#td{{ itemid }} svg')
+      .append("text")
+      .attr("x", 20)
+      .attr("y", 20)
+      .attr("text-anchor", "left")
+      .text("{{ item.title }}");
+    {% endif %}
 
     nv.utils.windowResize(
             function() {
