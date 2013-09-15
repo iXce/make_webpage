@@ -4,6 +4,7 @@ nv.addGraph(function() {
     chart.options({
         showXAxis: true,
         showYAxis: true,
+        tooltips: false,
     });
 
     chart.margin({left: 100});
