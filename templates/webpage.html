@@ -57,11 +57,17 @@
             <tr>
             {% if item0 is sequence and not item0 is string and not item0 is mapping %}
                 {% for item in item0 %}
-                <td>{% include "item_template.html" %}</td>
+                    {% set itemid = 'itemid'|inc %}
+                    <td id="td{{ itemid }}"{% if item.tdattrs %} {{ item.tdattrs }}{% endif %}>
+                    {% include "item_template.html" %}
+                    </td>
                 {% endfor %}
             {% else %}
                 {% with item = item0 %}
-                <td>{% include "item_template.html" %}</td>
+                    {% set itemid = 'itemid'|inc %}
+                    <td id="td{{ itemid }}"{% if item.tdattrs %} {{ item.tdattrs }}{% endif %}>
+                    {% include "item_template.html" %}
+                    </td>
                 {% endwith %}
             {% endif %}
             </tr>
