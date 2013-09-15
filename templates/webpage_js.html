@@ -41,7 +41,7 @@
         });
     </script>
 {% endif %}
-{% if types.heatmap or types.xkcdplot %}
+{% if types.heatmap or types.xkcdplot or types.plot %}
     <script src="static/js/d3.v3.min.js"></script>
 {% endif %}
 {% if types.xkcdplot %}
@@ -53,12 +53,12 @@
 {% if types.comment %}
     <script src="static/js/remotecomment.js"></script>
 {% endif %}
-{% if types.plot or types.bar or types.dots %}
+{% if types.bar or types.dots %}
     <script src="static/js/raphael-min.js"></script>
     <script src="static/js/g.raphael-min.js"></script>
 {% endif %}
 {% if types.plot %}
-    <script src="static/js/g.line-min.js"></script>
+    <script src="static/js/nv.d3.min.js"></script>
 {% endif %}
     <script type="text/javascript">
 {% if types.image or types.imagepopup or types.imagegallery %}

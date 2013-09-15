@@ -16,8 +16,27 @@ def flatten_singletons(l):
         return [flatten_singletons(v) for v in l]
 
 def sanitize_plot(item, params):
-    item["xdata"] = flatten_singletons(item["xdata"])
-    item["ydata"] = flatten_singletons(item["ydata"])
+    xdata = flatten_singletons(item["xdata"])
+    ydata = flatten_singletons(item["ydata"])
+    if not isinstance(ydata[0], collections.Iterable):
+        ydata = [ydata]
+    if not isinstance(xdata[0], collections.Iterable):
+        xdata = [xdata] * len(ydata)
+    if len(xdata) != len(ydata):
+        raise ValueError, "xdata and ydata must have the same number of " \
+                          "values lists or xdata be a single values list"
+    if "labels" in item and len(ydata) != len(item["labels"]):
+        raise ValueError, "you must either provide a label for each ydata " \
+                          "values list or no label at all"
+    allseries = zip(xdata, ydata)
+    data = []
+    for i, (xdata, ydata) in enumerate(allseries):
+        data.append({"key": item["labels"][i] if "labels" in item else "",
+                     "values": [{"x": xdata[i], "y": ydata[i]}
+                                for i in range(len(xdata))]
+                    })
+    item["data"] = simplejson.dumps(data)
+    item["tdattrs"] = "class = \"plotholder\" " + item["attrs"] if "attrs" in item else ""
     return item
 
 def colorize_heatmap(heatmap, min_val, max_val, colormap):

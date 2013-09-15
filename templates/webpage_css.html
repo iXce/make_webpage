@@ -10,6 +10,9 @@
     </style>
     <link href="static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="static/css/wswebpage.css" rel="stylesheet">
+{% if types.plot %}
+    <link href="static/css/nv.d3.css" rel="stylesheet">
+{% endif %}
 {% if types.imagepopup or types.imagegallery %}
     <link href="static/css/magnific-popup.css" rel="stylesheet">
 {% endif %}
