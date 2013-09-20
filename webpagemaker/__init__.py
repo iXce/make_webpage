@@ -1,3 +1,5 @@
+# coding: utf-8
+
 import sys, os
 import shutil
 import math
