@@ -216,7 +216,7 @@ dict, and possibly copy the file to the target directory"""
                     for k_i, k in enumerate(page_range):
                         k_paged = paged_format % (basename, k) if k > 0 else basename
                         if k_i > 0 and page_range[k_i - 1] != k - 1:
-                            links.append("&hellip;")
+                            links.append("<span>&hellip;</span>")
                         if k == i:
                             links.append("<strong>[%d]</strong>" % (k + 1,))
                         else:
