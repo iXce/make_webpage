@@ -213,8 +213,10 @@ dict, and possibly copy the file to the target directory"""
                         page_range = [0] + range(max(1, i - 4), min(i + 4, n_pages - 1)) + [n_pages - 1]
                     else:
                         page_range = range(n_pages)
-                    for k in page_range:
+                    for k_i, k in enumerate(page_range):
                         k_paged = paged_format % (basename, k) if k > 0 else basename
+                        if k_i > 0 and page_range[k_i - 1] != k - 1:
+                            links.append("&hellip;")
                         if k == i:
                             links.append("<strong>[%d]</strong>" % (k + 1,))
                         else:
