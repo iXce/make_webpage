@@ -88,7 +88,7 @@ img {
     stroke-width: 6px;
 }
 
-span.paged_links a, span.paged_links strong {
+span.paged_links a, span.paged_links strong, span.paged_links span {
     display: inline;
     margin-right: 4px;
 }
