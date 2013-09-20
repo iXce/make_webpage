@@ -209,7 +209,11 @@ dict, and possibly copy the file to the target directory"""
                     next_paged = paged_format % (basename, i+1) if (i+1) < n_pages else None
                     links = []
                     if prev_paged: links.append("<a href=\"%s\">&lt;&lt;</a>" % prev_paged)
-                    for k in range(n_pages):
+                    if n_pages > 10:
+                        page_range = [0] + range(max(1, i - 4), min(i + 4, n_pages - 1)) + [n_pages - 1]
+                    else:
+                        page_range = range(n_pages)
+                    for k in page_range:
                         k_paged = paged_format % (basename, k) if k > 0 else basename
                         if k == i:
                             links.append("<strong>[%d]</strong>" % (k + 1,))
