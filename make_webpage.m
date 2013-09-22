@@ -12,6 +12,7 @@ function items = make_webpage(items, target, params, page_title, page_descriptio
     if nargin >= 5, params.description = page_description; end
 
     if ~isfield(params, 'copy_images'), params.copy_images = 0; end
+    if ~isfield(params, 'sortable'), params.sortable = 0; end
     if ~isfield(params, 'title'), params.title = ''; end
     if ~isfield(params, 'description'), params.description = ''; end
     if ~isfield(params, 'paged'), params.paged = false; end

@@ -57,6 +57,7 @@ class WebpageMaker(object):
         params['WEB_ROOT'] = WEB_ROOT
         params['WEB_URL'] = WEB_URL
         params['copy_images'] = bool(params['copy_images'])
+        params['sortable'] = bool(params['sortable'])
         params['packed'] = False
         if packing:
             params.update(packing)
@@ -230,6 +231,7 @@ dict, and possibly copy the file to the target directory"""
                         pagedpage.items = page_items
                         pagedpage.title = self.params["title"]
                         pagedpage.description = self.params["description"]
+                        pagedpage.sortable = self.params["sortable"]
                         extra_pages.append(pagedpage)
         pages = [mainpage] + extra_pages
         if self.params['packed']:
