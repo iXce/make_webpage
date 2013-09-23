@@ -35,7 +35,9 @@ if __name__ == "__main__":
               "description": options.description,
               "copy_images": options.copy_images,
               "paged": options.paged,
-              "header_lines": options.header_lines}
+              "header_lines": options.header_lines,
+              "sortable": False,
+              "header": None}
     items = []
     for line in sys.stdin:
         items.append(line.strip().split())

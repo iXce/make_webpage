@@ -52,7 +52,19 @@
 
     <div class="row-fluid">
 {% include "webpage_precontent.html" %}
-        <table>
+        <table id="maintable">
+        {% if page.header %}
+        <thead>
+            <tr>
+                {% for item in page.header %}
+                <th id="td{{ itemid }}"{% if item.tdattrs %} {{ item.tdattrs }}{% endif %}>
+                {% include "item_template.html" %}
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        {% endif %}
+        <tbody>
         {% for item0 in page.items %}
             <tr>
             {% if item0 is sequence and not item0 is string and not item0 is mapping %}
@@ -72,6 +84,7 @@
             {% endif %}
             </tr>
         {% endfor %}
+        </tbody>
         </table>
 {% include "webpage_postcontent.html" %}
     </div>

@@ -23,6 +23,8 @@ class Page(object):
     path = ""
     title = ""
     description = ""
+    sortable = False
+    header = None
 
     def __init__(self, path, parent):
         self.path = path
@@ -158,6 +160,8 @@ dict, and possibly copy the file to the target directory"""
                 item["subpage"], subpage, extra_subpages = self.make_subpage(item["subpage"], 0, basename, parent)
                 if "subpage_title" in item: subpage.title = item["subpage_title"]
                 if "subpage_description" in item: subpage.description = item["subpage_description"]
+                if "subpage_header" in item: subpage.header = item["subpage_header"]
+                subpage.sortable = "subpage_sortable" in item and bool(item["subpage_sortable"])
                 subpages.extend([subpage] + extra_subpages)
             elif isinstance(item, dict) and "type" in item and item["type"] == "stack":
                 item["stack"], extra_subpages = self.find_subpages(item["stack"], basename, level, parent)
@@ -194,6 +198,8 @@ dict, and possibly copy the file to the target directory"""
         mainpage.items, extra_pages = self.find_subpages(items, basename, 0, mainpage)
         mainpage.title = self.params["title"]
         mainpage.description = self.params["description"]
+        mainpage.sortable = self.params["sortable"]
+        mainpage.header = self.params["header"] if "header" in self.params else None
         if self.params['paged']:
             n_per_page = self.params['paged']
             n_header_lines = self.params['header_lines'] if 'header_lines' in self.params else 0

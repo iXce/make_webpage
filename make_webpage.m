@@ -17,6 +17,7 @@ function items = make_webpage(items, target, params, page_title, page_descriptio
     if ~isfield(params, 'description'), params.description = ''; end
     if ~isfield(params, 'paged'), params.paged = false; end
     if ~isfield(params, 'packed'), params.packed = false; end
+    if ~isfield(params, 'header'), params.header = []; end
 
     %%
     % Update path
