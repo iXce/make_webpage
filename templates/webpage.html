@@ -20,13 +20,13 @@
 
     {% if page.title %}
     <div class="navbar navbar-inverse navbar-fixed-top">
+        <a class="navbar-brand navbar-left" href="{{ params.target_url }}">{% if page.parent and params.title %}{{ params.title }} : {% endif %}{{ page.title }}</a>
         <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="navbar-brand" href="{{ params.target_url }}">{% if page.parent and params.title %}{{ params.title }} : {% endif %}{{ page.title }}</a>
         </div>
     </div>
     {% endif %}
