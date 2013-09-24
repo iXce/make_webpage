@@ -14,12 +14,12 @@
     {% include "item_stack.html" %}
 {% elif item.type == "subpage" %}
     <a href="{{ item.url }}"{% if item.attrs %} {{ item.attrs }}{% endif %}>Subpage</a>
-{% elif item.type == "text" %}
-    <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item.text }}</span>
 {% elif item.type == "imagepopup" %}
     {% include "item_imagepopup.html" %}
 {% elif item.type == "imagegallery" %}
     {% include "item_imagegallery.html" %}
+{% elif item.type == "text" or "text" in item %}
+    <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item.text }}</span>
 {% elif item != None %}
     <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item }}</span>
 {% endif %}
