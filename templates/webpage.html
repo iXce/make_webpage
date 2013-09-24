@@ -36,7 +36,7 @@
     <ul class="breadcrumb">
 {% for breadcrumb in page.breadcrumbs %}
 {% if not loop.last %}
-        <li><a href="{{ breadcrumb.path }}">{% if breadcrumb.title %}{{ breadcrumb.title }}{% else %}{{ breadcrumb.path }}{% endif %}</a><span class="divider">/</span></li>
+        <li><a href="{{ breadcrumb.path }}">{% if breadcrumb.title %}{{ breadcrumb.title }}{% else %}{{ breadcrumb.path }}{% endif %}</a></li>
 {% else %}
         <li class="active">{% if breadcrumb.title %}{{ breadcrumb.title }}{% else %}{{ breadcrumb.path }}{% endif %}</li>
 {% endif %}
