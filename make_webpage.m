@@ -15,8 +15,8 @@ function items = make_webpage(items, target, params, page_title, page_descriptio
     if ~isfield(params, 'sortable'), params.sortable = 0; end
     if ~isfield(params, 'title'), params.title = ''; end
     if ~isfield(params, 'description'), params.description = ''; end
-    if ~isfield(params, 'paged'), params.paged = false; end
-    if ~isfield(params, 'packed'), params.packed = false; end
+    if ~isfield(params, 'paged'), params.paged = 0; end
+    if ~isfield(params, 'packed'), params.packed = 0; end
     if ~isfield(params, 'header'), params.header = []; end
 
     %%
