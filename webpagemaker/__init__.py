@@ -60,7 +60,7 @@ class WebpageMaker(object):
         params['WEB_URL'] = WEB_URL
         params['copy_images'] = bool(params['copy_images'])
         params['sortable'] = bool(params['sortable'])
-        params['packed'] = False
+        params['packed'] = bool(params['packed'])
         if packing:
             params.update(packing)
         self.params = params
