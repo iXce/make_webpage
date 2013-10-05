@@ -22,6 +22,8 @@ def sanitize_plot(item, params):
         ydata = [ydata]
     if not isinstance(xdata[0], collections.Iterable):
         xdata = [xdata] * len(ydata)
+    if "labels" in item and isinstance(item["labels"], basestring):
+        item["labels"] = [item["labels"]]
     if len(xdata) != len(ydata):
         raise ValueError, "xdata and ydata must have the same number of " \
                           "values lists or xdata be a single values list"
