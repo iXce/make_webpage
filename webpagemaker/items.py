@@ -24,6 +24,8 @@ def sanitize_plot(item, params):
         xdata = [xdata] * len(ydata)
     if "labels" in item and isinstance(item["labels"], basestring):
         item["labels"] = [item["labels"]]
+    if "colors" in item and isinstance(item["colors"], basestring):
+        item["colors"] = [item["colors"]]
     if len(xdata) != len(ydata):
         raise ValueError, "xdata and ydata must have the same number of " \
                           "values lists or xdata be a single values list"
