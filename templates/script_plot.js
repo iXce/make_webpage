@@ -16,6 +16,8 @@ nv.addGraph(function() {
     {% if item.ylabel %}chart.yAxis
             .axisLabel("{{ item.ylabel }}");{% endif%}
 
+    {% if item.extrascript %}{{ item.extrascript }}{% endif %}
+
     {% if "minx" in item and "maxx" in item %}chart.forceX([{{ item.minx }}, {{ item.maxx }}]);{% endif %}
 
     {% if "miny" in item and "maxy" in item %}chart.forceY([{{ item.miny }}, {{ item.maxy }}]);{% endif %}
