@@ -46,7 +46,7 @@ function items = make_webpage(items, target, params, page_title, page_descriptio
 
     %%
     % Save as json and run python
-    out_json = fullfile(target_dir, 'webpage.json');
+    out_json = [target '_webpage.json'];
     webpage.params = params;
     webpage.params.target = target;
     webpage.params.target_dir = target_dir;
