@@ -1,13 +1,4 @@
     <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        background: #FFF url("static/img/light_wool.png") repeat;
-{% if page.title %}
-        padding-top: 60px;
-{% endif %}
-        padding-bottom: 40px;
-      }
-    </style>
     <link href="static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="static/css/wswebpage.css" rel="stylesheet">
 {% if types.plot %}
@@ -16,3 +7,18 @@
 {% if types.imagepopup or types.imagegallery %}
     <link href="static/css/magnific-popup.css" rel="stylesheet">
 {% endif %}
+    <style type="text/css">
+      body {
+        background: #FFF url("static/img/light_wool.png") repeat;
+      }
+      #main-container {
+{% if page.title %}
+        position: absolute;
+        top: 60px;
+{% endif %}
+        margin-bottom: 40px;
+      }
+{% if params.extracss %}
+        {{ params.extracss }}
+{% endif %}
+    </style>
