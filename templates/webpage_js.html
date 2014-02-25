@@ -3,6 +3,7 @@
 {% if page.sortable %}
     <script src="static/js/stupidtable.min.js"></script>
     <script type="text/javascript">
+    /* <![CDATA[ */
         var table = $("#maintable").stupidtable();
         table.on("aftertablesort", function (event, data) {
             var th = $(this).find("th");
@@ -12,6 +13,7 @@
             var arrow = data.direction === dir.ASC ? "&uarr;" : "&darr;";
             th.eq(data.column).append('<span class="arrow">' + arrow +'</span>');
         });
+    /* ]]> */
     </script>
 {% endif %}
 {% if types.image %}
@@ -75,6 +77,7 @@
     <script src="static/js/nv.d3.min.js"></script>
 {% endif %}
     <script type="text/javascript">
+    /* <![CDATA[ */
 {% if types.image or types.imagepopup or types.imagegallery %}
         $('img:not(.nojail)').jail({offset:800,placeholder:'static/img/blank.gif'{% if types.stack or types.imagepopup or types.imagesgallery %},loadHiddenImages:true{% endif %}});
 {% endif %}
@@ -90,5 +93,8 @@
 {% endwith %}
 {% endif %}
 {% endfor %}
-
+{% if params.extracss %}
+        {{ params.extrajs }}
+{% endif %}
+    /* ]]> */
     </script>
