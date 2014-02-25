@@ -10,7 +10,7 @@ def flatten_singletons(l):
     first = l[0]
     if not isinstance(first, collections.Iterable):
         return [v for v in l]
-    elif len(first) == 1:
+    elif not any([len(v) > 1 for v in l]):
         return [v[0] for v in l]
     else:
         return [flatten_singletons(v) for v in l]
