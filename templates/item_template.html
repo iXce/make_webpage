@@ -1,10 +1,12 @@
 {% if item.subpage and item.subpage.url %}
 <a href="{{ item.subpage.url }}"{% if item.title %} title="{{ item.title }}"{% endif %}>
+{% elif item.link %}
+<a href="{{ item.link }}"{% if item.title %} title="{{ item.title }}"{% endif %}>
 {% endif %}
 {% include "item_type_switch.html" %}
 {% if item.caption %}
     {{ item.caption }}
 {% endif %}
-{% if item.subpage and item.subpage.url %}
+{% if (item.subpage and item.subpage.url) or item.link %}
 </a>
 {% endif %}
