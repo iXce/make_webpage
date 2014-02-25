@@ -34,6 +34,7 @@ if __name__ == "__main__":
               "title": options.title,
               "description": options.description,
               "copy_images": options.copy_images,
+              "packed": False,
               "paged": options.paged,
               "header_lines": options.header_lines,
               "sortable": False,
