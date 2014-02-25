@@ -3,6 +3,7 @@
 import sys, os
 import shutil
 import math
+import datetime
 
 from jinja2 import Template, Environment, FileSystemLoader
 
@@ -187,7 +188,7 @@ dict, and possibly copy the file to the target directory"""
         else:
             template = env.get_template('webpage.html')
         target_path = os.path.join(self.params['target_dir'], page.path)
-        context = {"params": self.params, "page": page, "types": self.item_types}
+        context = {"params": self.params, "page": page, "types": self.item_types, "currentdate": datetime.datetime.now()}
         open(target_path, "w").write(template.render(context))
         print >> sys.stderr, target_path.replace(WEB_ROOT, WEB_URL)
 
