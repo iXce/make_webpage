@@ -1,4 +1,4 @@
-<img data-src="{{ item.url }}" style="{% if item.width %}width: {{ item.width }}px;{% endif %}{% if item.height %}height: {{ item.height }}px;{% endif %}" {% if item.title %} title="{{ item.title }}"{% endif %}{% if item.attrs %} {{ item.attrs }}{% endif %} />
+<img data-src="{{ item.url }}" style="{% if item.width %}width: {{ item.width }}px;{% endif %}{% if item.height %}height: {{ item.height }}px;{% endif %} {{ item.extrastyle }}" {% if item.title %} title="{{ item.title }}"{% endif %}{% if item.attrs %} {{ item.attrs }}{% endif %} />
 <noscript>
-    <img src="{{ item.url }}" style="{% if item.width %}width: {{ item.width }}px;{% endif %}{% if item.height %}height: {{ item.height }}px;{% endif %}" {% if item.title %} title="{{ item.title }}"{% endif %}{% if item.attrs %} {{ item.attrs }}{% endif %} />
+    <img src="{{ item.url }}" style="{% if item.width %}width: {{ item.width }}px;{% endif %}{% if item.height %}height: {{ item.height }}px;{% endif %} {{ item.extrastyle }}" {% if item.title %} title="{{ item.title }}"{% endif %}{% if item.attrs %} {{ item.attrs }}{% endif %} />
 </noscript>
