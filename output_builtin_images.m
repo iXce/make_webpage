@@ -25,5 +25,5 @@ end
 function [filename, out_k] = image_to_file(im, out_dir, out_k)
     filename = fullfile(out_dir, sprintf('%08d.jpg', out_k));
     out_k = out_k + 1;
-    imwrite(im, filename);
+    imwrite(im, filename, 'Quality', 96);
 end
