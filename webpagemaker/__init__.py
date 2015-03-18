@@ -59,9 +59,12 @@ class WebpageMaker(object):
         params['target_url'] = params['target'].replace(WEB_ROOT, WEB_URL)
         params['WEB_ROOT'] = WEB_ROOT
         params['WEB_URL'] = WEB_URL
-        params['copy_images'] = bool(params['copy_images'])
-        params['sortable'] = bool(params['sortable'])
-        params['packed'] = bool(params['packed'])
+        params['copy_images'] = bool(params.get('copy_images', False))
+        params['sortable'] = bool(params.get('sortable', False))
+        params['packed'] = bool(params.get('packed', False))
+        params['paged'] = bool(params.get('paged', False))
+        params['title'] = params.get('title', '')
+        params['description'] = params.get('description', '')
         if packing:
             params.update(packing)
         self.params = params
