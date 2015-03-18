@@ -20,6 +20,8 @@
     {% include "item_imagegallery.html" %}
 {% elif item.type == "rawhtml" %}
     {% include "item_rawhtml.html" %}
+{% elif item.type == "table" %}
+    {% include "item_table.html" %}
 {% elif item.type == "text" or item.text %}
     <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item.text }}</span>
 {% elif item != None %}

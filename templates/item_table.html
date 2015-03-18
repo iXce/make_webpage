@@ -1,0 +1,34 @@
+<table class="innertable">
+    {% if item.header %}
+    <thead>
+        <tr>
+            {% for item in item.header %}
+            <th id="td{{ itemid }}"{% if item.tdattrs %} {{ item.tdattrs }}{% endif %}>
+            {% include "item_template.html" %}
+            </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    {% endif %}
+    <tbody>
+    {% for item0 in item.rows %}
+        <tr>
+        {% if item0 is sequence and not item0 is string and not item0 is mapping %}
+            {% for item in item0 %}
+                {% set itemid = 'itemid'|inc %}
+                <td id="td{{ itemid }}"{% if item.tdattrs %} {{ item.tdattrs }}{% endif %}>
+                {% include "item_template.html" %}
+                </td>
+            {% endfor %}
+        {% else %}
+            {% with item = item0 %}
+                {% set itemid = 'itemid'|inc %}
+                <td id="td{{ itemid }}"{% if item.tdattrs %} {{ item.tdattrs }}{% endif %}>
+                {% include "item_template.html" %}
+                </td>
+            {% endwith %}
+        {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
