@@ -55,6 +55,7 @@
         <thead>
             <tr>
                 {% for item in page.header %}
+                {% set itemid = 'itemid'|inc %}
                 <th id="td{{ itemid }}"{% if item.tdattrs %} {{ item.tdattrs }}{% endif %}>
                 {% include "item_template.html" %}
                 </th>
