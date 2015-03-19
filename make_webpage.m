@@ -1,4 +1,4 @@
-function items = make_webpage(items, target, params, page_title, page_description)
+function [items, urls] = make_webpage(items, target, params, page_title, page_description)
     % make_webpage(items, target, params, page_title, page_description)
     % Automagically build a pretty webpage from a set of random items
     % Simple usage : simply pass a 1-dim or 2-dims cell array containing
@@ -56,4 +56,6 @@ function items = make_webpage(items, target, params, page_title, page_descriptio
     disp(sprintf('Running python %s %s', pypath, out_json));
     [ret, ~] = python(pypath, out_json);
     disp(ret);
+    in_json = [target '_webpage_urls.json'];
+    urls = loadjson(in_json);
 end

@@ -12,10 +12,11 @@ if __name__ == "__main__":
         print >> sys.stderr, "Missing json : %s" % jsonfile
         sys.exit(1)
     try:
-        import ujson
-        jsondata = ujson.load(open(jsonfile))
+        import ujson as json
     except ImportError:
-        import simplejson
-        jsondata = simplejson.load(open(jsonfile))
+        import simplejson as json
+    jsondata = json.load(open(jsonfile))
     maker = WebpageMaker(jsondata)
-    maker.make()
+    urls = maker.make()
+    jsonout = "%s_urls.json" % jsonfile.replace(".json", "")
+    json.dump(urls, open(jsonout, "w"))

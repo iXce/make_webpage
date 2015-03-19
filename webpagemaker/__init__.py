@@ -203,6 +203,7 @@ dict, and possibly copy the file to the target directory"""
         context = {"params": self.params, "page": page, "types": self.item_types, "currentdate": datetime.datetime.now()}
         open(target_path, "w").write(template.render(context))
         print >> sys.stderr, target_path.replace(WEB_ROOT, WEB_URL)
+        return target_path.replace(WEB_ROOT, WEB_URL)
 
     def preprocess(self):
         items = self.process_item(self.items)
@@ -262,5 +263,8 @@ dict, and possibly copy the file to the target directory"""
     def make(self):
         self.prepare_output()
         self.pages = self.preprocess()
+        urls = []
         for page in self.pages:
-            self.make_page(page)
+            url = self.make_page(page)
+            urls.append(url)
+        return urls
