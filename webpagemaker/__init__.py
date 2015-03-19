@@ -80,6 +80,15 @@ class WebpageMaker(object):
         if DEBUG or not os.path.isdir(static_dir):
             if DEBUG and os.path.exists(static_dir): shutil.rmtree(static_dir)
             shutil.copytree(os.path.join(THIS_DIR, "static"), static_dir)
+        if 'extraimages' in self.params:
+            extra_images = self.params['extraimages']
+            extra_images_dir = os.path.join(img_dir, "extras")
+            if not os.path.isdir(extra_images_dir):
+                os.makedirs(extra_images_dir)
+            for img in extra_images:
+                new_name = os.path.basename(img)
+                new_path = os.path.join(self.params["target_dir"], "imgs", "extras", new_name)
+                if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(img) > os.path.getmtime(new_path))): shutil.copy(img, new_path)
 
     @register_type
     def process_item(self, item, orig_item = None):
