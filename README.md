@@ -38,6 +38,7 @@ Currently supported objects
 - Line plots
 - Subpages
 - Stacks
+- Tables
 
 Other features
 ==============
@@ -128,6 +129,12 @@ Stacks
 A stack of items on top of each other, with a set of tabs to switch between
 items. Define it as a struct with `.type = 'stack'`, `.stack =` cellofitems and
 `.labels =` cellofstrings
+
+Tables
+------
+A simple table. Define it as a struct with `.type = 'table'`, `.header =`
+cellofitems, `.rows =` cellofcellofitems. Tables are really minipages instead
+pages.
 
 Pagination
 ==========
