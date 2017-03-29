@@ -62,7 +62,7 @@ class WebpageMaker(object):
         params['copy_images'] = bool(params.get('copy_images', False))
         params['sortable'] = bool(params.get('sortable', False))
         params['packed'] = bool(params.get('packed', False))
-        params['paged'] = bool(params.get('paged', False))
+        params['paged'] = params.get('paged', False)
         params['title'] = params.get('title', '')
         params['description'] = params.get('description', '')
         if packing:
