@@ -15,8 +15,6 @@ from items import item_processors
 
 DEBUG = False
 THIS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # One level up
-WEB_ROOT = "/meleze/data0/public_html"
-WEB_URL = "http://www-roc.inria.fr/cluster-willow"
 
 class Page(object):
     items = None
@@ -54,11 +52,20 @@ class WebpageMaker(object):
 
     def __init__(self, data, packing = None):
         params = data['params']
-        params['target'] = os.path.expanduser(params['target'])
-        params['target_dir'] = os.path.join(os.path.normpath(os.path.expanduser(params['target_dir'])), '')
-        params['target_url'] = params['target'].replace(WEB_ROOT, WEB_URL)
-        params['WEB_ROOT'] = WEB_ROOT
-        params['WEB_URL'] = WEB_URL
+        target = os.path.expanduser(params['target'])
+        target = os.path.abspath(target)
+        if os.path.splitext(target)[1] == "":
+            target_dir = target
+            target = os.path.join(target, "index.html")
+        else:
+            target_dir = os.path.dirname(target)
+        params['target'] = target
+        params['target_dir'] = target_dir
+        params['WEB_ROOT'] = params.get('WEB_ROOT', None)
+        params['WEB_URL'] = params.get('WEB_URL', None)
+        params['target_url'] = params['target']
+        if params['WEB_ROOT'] and params['WEB_URL']:
+            params['target_url'] = params['target_url'].replace(WEB_ROOT, WEB_URL)
         params['copy_images'] = bool(params.get('copy_images', False))
         params['sortable'] = bool(params.get('sortable', False))
         params['packed'] = bool(params.get('packed', False))
@@ -73,6 +80,8 @@ class WebpageMaker(object):
     def prepare_output(self):
         """Copy static stuff (bootstrap, stylesheet, javascript)"""
         target_dir = self.params["target_dir"]
+        if not os.path.isdir(target_dir):
+            os.makedirs(target_dir)
         img_dir = os.path.join(self.params["target_dir"], "imgs")
         if not os.path.isdir(img_dir):
             os.makedirs(img_dir)
@@ -113,7 +122,7 @@ class WebpageMaker(object):
                     except TypeError:
                         pass
             newitem["rawpath"] = item
-            if self.params["WEB_ROOT"] in item:
+            if self.params['WEB_ROOT'] and self.params['WEB_URL'] and self.params["WEB_ROOT"] in item:
                 newitem["url"] = item.replace(self.params["WEB_ROOT"],
                                               self.params["WEB_URL"])
             elif self.params["copy_images"]:
@@ -205,8 +214,10 @@ dict, and possibly copy the file to the target directory"""
         target_path = os.path.join(self.params['target_dir'], page.path)
         context = {"params": self.params, "page": page, "types": self.item_types, "currentdate": datetime.datetime.now()}
         open(target_path, "w").write(template.render(context))
-        print >> sys.stderr, target_path.replace(WEB_ROOT, WEB_URL)
-        return target_path.replace(WEB_ROOT, WEB_URL)
+        if self.params['WEB_ROOT'] and self.params['WEB_URL']:
+            target_path = target_path.replace(self.params['WEB_ROOT'], self.params['WEB_URL'])
+        print >> sys.stderr, target_path
+        return target_path
 
     def preprocess(self):
         items = self.process_item(self.items)
