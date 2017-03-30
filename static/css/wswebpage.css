@@ -38,6 +38,21 @@ table a:hover {
 img {
     max-width: none;
 }
+.bbox-container {
+    position: relative;
+}
+
+.bbox {
+    border: 2px solid #A6FF3D;
+    position: absolute;
+}
+
+.bbox-score {
+    border-bottom-right-radius: 10px;
+    display: inline-block;
+    padding-right: 4px;
+}
+
 .heatmap-tooltip {
   position: absolute;
   display: block;

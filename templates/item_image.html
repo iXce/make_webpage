@@ -1,4 +1,13 @@
+{% if item.boxes %}<div class="bbox-container">{% endif %}
 <img data-src="{{ item.url }}" style="{% if item.width %}width: {{ item.width }}px;{% endif %}{% if item.height %}height: {{ item.height }}px;{% endif %} {{ item.extrastyle }}" {% if item.title %} title="{{ item.title }}"{% endif %}{% if item.attrs %} {{ item.attrs }}{% endif %} />
 <noscript>
     <img src="{{ item.url }}" style="{% if item.width %}width: {{ item.width }}px;{% endif %}{% if item.height %}height: {{ item.height }}px;{% endif %} {{ item.extrastyle }}" {% if item.title %} title="{{ item.title }}"{% endif %}{% if item.attrs %} {{ item.attrs }}{% endif %} />
 </noscript>
+{% if item.boxes %}
+{% for box in item.boxes %}<div class="bbox"
+	 style="border-color: {{ box.color|default("#bbbbbb") }}; left: {{ box.x0 * 100 }}%; width: {{ box.width * 100 }}%; top: {{ box.y0 * 100 }}%; height: {{ box.height * 100 }}%;"
+	 data-toggle="tooltip" title="{{ "%.02f"|format(box.score) }}">
+{% if box.score %}<div class="bbox-score" style="color: {{ box.textcolor|default("#fff") }}; background-color: {{ box.textbgcolor|default("rgba(0, 0, 0, 0.6)") }};">{{ "%.02f"|format(box.score) }}</div>{% endif %}
+</div>{% endfor %}
+</div>
+{% endif %}
