@@ -14,7 +14,7 @@ from utils import get_file_type, get_mimetype
 from items import item_processors
 
 DEBUG = False
-THIS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # One level up
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class Page(object):
     items = None
