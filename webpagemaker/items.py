@@ -1,5 +1,5 @@
 import os
-import simplejson
+import json
 import gzip
 import collections
 from PIL import Image
@@ -45,7 +45,7 @@ def sanitize_plot(item, params):
         if "colors" in item:
             entry["color"] = item["colors"][k]
         data.append(entry)
-    item["data"] = simplejson.dumps(data)
+    item["data"] = json.dumps(data)
     item["tdattrs"] = "class = \"plotholder\" " + item["attrs"] if "attrs" in item else ""
     return item
 
@@ -92,9 +92,9 @@ def process_heatmap(item, params):
     # Save JSON
     jsonpath = os.path.join(params["target_dir"], "json")
     if not os.path.exists(jsonpath): os.makedirs(jsonpath)
-    json = simplejson.dumps(data)
-    json = json.replace(" ", "")
-    open(os.path.join(jsonpath, heatmap_json), "w").write(json)
+    json_data = json.dumps(data)
+    json_data = json_data.replace(" ", "")
+    open(os.path.join(jsonpath, heatmap_json), "w").write(json_data)
     gzip.open(os.path.join(jsonpath, heatmap_json + ".gz"), "w").write(json.replace(" ", ""))
     del item["data"]
     # FIXME: dirty hack for gzipped jsons

@@ -14,7 +14,7 @@ if __name__ == "__main__":
     try:
         import ujson as json
     except ImportError:
-        import simplejson as json
+        import json
     jsondata = json.load(open(jsonfile))
     maker = WebpageMaker(jsondata)
     urls = maker.make()
