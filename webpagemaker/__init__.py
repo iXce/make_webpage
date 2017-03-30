@@ -126,16 +126,19 @@ class WebpageMaker(object):
                 newitem["url"] = item.replace(self.params["target_dir"], "")
             return newitem
         elif isinstance(item, dict) and "type" in item:
-            if item["type"] in ("image", "video"):
+            if item["type"] in ("image", "video", "thumbnail"):
                 processed = self.process_item(item["url"], item)
                 if isinstance(processed, dict):
                     item.update(processed)
                 else:
                     item["url"] = processed
-                if "popup" in item and "rawpath" in item:
-                    item["fullurl"] = item["url"]
+                if ("popup" in item or item["type"] == "thumbnail") and "rawpath" in item:
                     item["url"] = make_thumbnail(item)
-                    item["type"] = "imagegallery" if item["popup"] == "gallery" else "imagepopup"
+                    if item["type"] != "thumbnail":
+                        item["fullurl"] = item["url"]
+                        item["type"] = "imagegallery" if item["popup"] == "gallery" else "imagepopup"
+                    else:
+                        item["type"] = "image"
                 return item
             elif item["type"] == "stack":
                 item["stack"] = self.process_items(item["stack"])
