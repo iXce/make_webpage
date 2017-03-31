@@ -1,7 +1,7 @@
 make_webpage
 ============
 
-A python-based toolbox for easily generating pretty webpages in MATLAB.
+A Python package for easily generating pretty webpages, also including a MATLAB toolbox.
 
 Quick start
 ===========
