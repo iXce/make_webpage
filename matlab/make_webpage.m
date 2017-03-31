@@ -52,7 +52,7 @@ function [items, urls] = make_webpage(items, target, params, page_title, page_de
     webpage.params.target_dir = target_dir;
     webpage.items = items;
     savejson('', webpage, 'FileName', out_json, 'ForceRootName', 0);
-    pypath = fullfile(curdir, 'jsontohtml.py');
+    pypath = fullfile(curdir, '..', 'jsontohtml.py');
     disp(sprintf('Running python %s %s', pypath, out_json));
     [ret, ~] = python(pypath, out_json);
     disp(ret);
