@@ -38,8 +38,8 @@ class Page(object):
     breadcrumbs = property(_get_breadcrumbs)
     
 def register_type(func):
-    def wrapped(self, *a):
-        item = func(self, *a)
+    def wrapped(self, *args, **kwargs):
+        item = func(self, *args, **kwargs)
         if isinstance(item, dict) and "type" in item:
             self.item_types[item["type"]] = True
         return item
