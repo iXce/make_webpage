@@ -53,6 +53,8 @@ class WebpageMaker(object):
 
     def __init__(self, data, packing = None):
         params = data['params']
+
+        # Path-related parameters
         target = os.path.expanduser(params['target'])
         target = os.path.abspath(target)
         if os.path.splitext(target)[1] == "":
@@ -67,14 +69,27 @@ class WebpageMaker(object):
         params['target_url'] = params['target']
         if params['WEB_ROOT'] is not None and params['WEB_URL'] is not None:
             params['target_url'] = params['target_url'].replace(params['WEB_ROOT'], params['WEB_URL'])
+
+        # Media-related parameters
         params['copy_images'] = bool(params.get('copy_images', False))
+        params['allthumbs'] = bool(params.get('allthumbs', False))
+        params['thumbwidth'] = params.get('thumbwidth', None)
+        params['thumbheight'] = params.get('thumbheight', None)
+        if params['allthumbs'] and params['thumbwidth'] is None and params['thumbheight'] is None:
+            raise RuntimeError("When `allthumbs` is true, `thumbwidth` or `thumbheight` must be provided.")
+
+        # Layout-related parameters
         params['sortable'] = bool(params.get('sortable', False))
         params['packed'] = bool(params.get('packed', False))
         params['paged'] = params.get('paged', False)
+
+        # Description-related parameters
         params['title'] = params.get('title', '')
         params['description'] = params.get('description', '')
+
         if packing:
             params.update(packing)
+
         self.params = params
         self.items = data['items']
 
@@ -101,7 +116,7 @@ class WebpageMaker(object):
                 if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(img) > os.path.getmtime(new_path))): shutil.copy(img, new_path)
 
     @register_type
-    def process_item(self, item, orig_item = None):
+    def process_item(self, item, orig_item = None, in_media_item=False):
         if isinstance(item, dict) and "subpage" in item:
             item["subpage"] = self.process_item(item["subpage"])
         if type(item) in (str,unicode) and os.path.exists(item) and not os.path.isdir(item):
@@ -122,26 +137,54 @@ class WebpageMaker(object):
                             newitem["height"] = height * newitem["width"] / width
                     except TypeError:
                         pass
+            # Should all images should be converted to thumbnails?
+            do_thumbnail = False
+            if newitem["type"] == "image" and self.params["allthumbs"]:
+                # If we are in a media item, do not make thumbnail now, it will
+                # be done (if needed) in the media item
+                if not in_media_item:
+                    if self.params["thumbwidth"]:
+                        if not self.params["thumbheight"]:
+                            newitem["height"] = float(newitem["height"]) / newitem["width"] * self.params["thumbwidth"]
+                            newitem["width"] = self.params["thumbwidth"]
+                        else:
+                            newitem["width"] = self.params["thumbwidth"]
+                            newitem["height"] = self.params["thumbheight"]
+                    else:
+                        newitem["width"] = float(newitem["width"]) / newitem["height"] * self.params["thumbheight"]
+                        newitem["height"] = self.params["thumbheight"]
+                    do_thumbnail = True
             newitem["rawpath"] = item
             if self.params['WEB_ROOT'] and self.params['WEB_URL'] and self.params["WEB_ROOT"] in item:
                 newitem["url"] = item.replace(self.params["WEB_ROOT"],
                                               self.params["WEB_URL"])
-            elif self.params["copy_images"]:
+            elif self.params["copy_images"] or do_thumbnail:
                 new_name = item.replace(os.sep, "_")
                 new_path = os.path.join(self.params["target_dir"], "imgs", new_name)
-                if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(item) > os.path.getmtime(new_path))): shutil.copy(item, new_path)
+                if not do_thumbnail:
+                    if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(item) > os.path.getmtime(new_path))): shutil.copy(item, new_path)
                 newitem["rawpath"] = new_path
                 newitem["url"] = os.path.join("imgs", new_name)
+                if do_thumbnail:
+                    newitem["url"] = make_thumbnail(newitem, orig_path=item)
             else:
                 newitem["url"] = item.replace(self.params["target_dir"], "")
             return newitem
         elif isinstance(item, dict) and "type" in item:
             if item["type"] in ("image", "video", "thumbnail"):
-                processed = self.process_item(item["url"], item)
+                original_item = dict(item)
+                processed = self.process_item(item["url"], item, in_media_item=True)
                 if isinstance(processed, dict):
                     item.update(processed)
                 else:
                     item["url"] = processed
+                if item["type"] == "image" and self.params["allthumbs"]:
+                    item["type"] = "thumbnail"
+                    if not original_item.get("width") and not original_item.get("height"):
+                        if self.params["thumbwidth"]:
+                            item["width"] = self.params["thumbwidth"]
+                        if self.params["thumbheight"]:
+                            item["height"] = self.params["thumbheight"]
                 if ("popup" in item or item["type"] == "thumbnail") and "rawpath" in item:
                     item["url"] = make_thumbnail(item)
                     if item["type"] != "thumbnail":
