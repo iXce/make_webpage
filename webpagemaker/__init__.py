@@ -4,6 +4,7 @@ import sys, os
 import shutil
 import math
 import datetime
+import codecs
 
 from jinja2 import Template, Environment, FileSystemLoader
 
@@ -213,7 +214,7 @@ dict, and possibly copy the file to the target directory"""
             template = env.get_template('webpage.html')
         target_path = os.path.join(self.params['target_dir'], page.path)
         context = {"params": self.params, "page": page, "types": self.item_types, "currentdate": datetime.datetime.now()}
-        open(target_path, "w").write(template.render(context))
+        codecs.open(target_path, "w", "utf-8").write(template.render(context))
         if self.params['WEB_ROOT'] and self.params['WEB_URL']:
             target_path = target_path.replace(self.params['WEB_ROOT'], self.params['WEB_URL'])
         print >> sys.stderr, target_path
