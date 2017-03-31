@@ -64,8 +64,8 @@ class WebpageMaker(object):
         params['WEB_ROOT'] = params.get('WEB_ROOT', None)
         params['WEB_URL'] = params.get('WEB_URL', None)
         params['target_url'] = params['target']
-        if params['WEB_ROOT'] and params['WEB_URL']:
-            params['target_url'] = params['target_url'].replace(WEB_ROOT, WEB_URL)
+        if params['WEB_ROOT'] is not None and params['WEB_URL'] is not None:
+            params['target_url'] = params['target_url'].replace(params['WEB_ROOT'], params['WEB_URL'])
         params['copy_images'] = bool(params.get('copy_images', False))
         params['sortable'] = bool(params.get('sortable', False))
         params['packed'] = bool(params.get('packed', False))
