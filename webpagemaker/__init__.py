@@ -302,15 +302,17 @@ dict, and possibly copy the file to the target directory"""
                         else:
                             links.append("<a href=\"%s\">%d</a>" % (k_paged, k + 1))
                     if next_paged: links.append("<a href=\"%s\">&gt;&gt;</a>" % next_paged)
-                    page_items.append("<span class=\"paged_links\">%s</span>" % "".join(links))
+                    paginator = "<span class=\"paged_links\">%s</span>" % "".join(links)
                     if i == 0:
                         mainpage.items = page_items
+                        mainpage.paginator = paginator
                     else:
                         pagedpage = Page(paged_format % (basename, i), None)
                         pagedpage.items = page_items
                         pagedpage.title = self.params["title"]
                         pagedpage.description = self.params["description"]
                         pagedpage.sortable = self.params["sortable"]
+                        pagedpage.paginator = paginator
                         extra_pages.append(pagedpage)
         pages = [mainpage] + extra_pages
         if self.params['packed']:
