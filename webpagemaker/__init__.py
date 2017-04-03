@@ -161,7 +161,7 @@ class WebpageMaker(object):
             elif self.params["copy_images"] or do_thumbnail:
                 new_name = item.replace(os.sep, "_")
                 new_path = os.path.join(self.params["target_dir"], "imgs", new_name)
-                if not do_thumbnail:
+                if not do_thumbnail and not orig_item.get("type") == "thumbnail":
                     if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(item) > os.path.getmtime(new_path))): shutil.copy(item, new_path)
                 newitem["rawpath"] = new_path
                 newitem["url"] = os.path.join("imgs", new_name)
@@ -169,6 +169,7 @@ class WebpageMaker(object):
                     newitem["url"] = make_thumbnail(newitem, orig_path=item)
             else:
                 newitem["url"] = item.replace(self.params["target_dir"], "")
+            if "type" in orig_item: newitem["type"] = orig_item["type"]
             return newitem
         elif isinstance(item, dict) and "type" in item:
             if item["type"] in ("image", "video", "thumbnail"):
@@ -186,7 +187,7 @@ class WebpageMaker(object):
                         if self.params["thumbheight"]:
                             item["height"] = self.params["thumbheight"]
                 if ("popup" in item or item["type"] == "thumbnail") and "rawpath" in item:
-                    item["url"] = make_thumbnail(item)
+                    item["url"] = make_thumbnail(item, orig_path=original_item["url"])
                     if item["type"] != "thumbnail":
                         item["fullurl"] = item["url"]
                         item["type"] = "imagegallery" if item["popup"] == "gallery" else "imagepopup"
