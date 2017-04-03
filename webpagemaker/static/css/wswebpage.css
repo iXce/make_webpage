@@ -107,3 +107,8 @@ span.paged_links a, span.paged_links strong, span.paged_links span {
     display: inline;
     margin-right: 4px;
 }
+
+.prettytext {
+    padding-left: 10px;
+    padding-right: 10px;
+}

@@ -23,7 +23,11 @@
 {% elif item.type == "table" %}
     {% include "item_table.html" %}
 {% elif item.type == "text" or item.text %}
+<div{% if not item.rawtext %} class="prettytext"{% endif %}>
     <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item.text }}</span>
+</div>
 {% elif item != None %}
+<div class="prettytext">
     <span{% if item.attrs %} {{ item.attrs }}{% endif %}>{{ item }}</span>
+</div>
 {% endif %}
