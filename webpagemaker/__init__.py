@@ -9,7 +9,7 @@ import codecs
 from jinja2 import Template, Environment, FileSystemLoader
 
 from jinjafilters import inc_filter
-from thumbnail import make_thumbnail
+from thumbnail import make_thumbnail, adjust_thumb_size
 from getimageinfo import getImageInfo
 from utils import get_file_type, get_mimetype
 from items import item_processors
@@ -143,16 +143,7 @@ class WebpageMaker(object):
                 # If we are in a media item, do not make thumbnail now, it will
                 # be done (if needed) in the media item
                 if not in_media_item:
-                    if self.params["thumbwidth"]:
-                        if not self.params["thumbheight"]:
-                            newitem["height"] = float(newitem["height"]) / newitem["width"] * self.params["thumbwidth"]
-                            newitem["width"] = self.params["thumbwidth"]
-                        else:
-                            newitem["width"] = self.params["thumbwidth"]
-                            newitem["height"] = self.params["thumbheight"]
-                    else:
-                        newitem["width"] = float(newitem["width"]) / newitem["height"] * self.params["thumbheight"]
-                        newitem["height"] = self.params["thumbheight"]
+                    adjust_thumb_size(newitem, self.params)
                     do_thumbnail = True
             newitem["rawpath"] = item
             if self.params['WEB_ROOT'] and self.params['WEB_URL'] and self.params["WEB_ROOT"] in item:
@@ -182,10 +173,7 @@ class WebpageMaker(object):
                 if item["type"] == "image" and self.params["allthumbs"]:
                     item["type"] = "thumbnail"
                     if not original_item.get("width") and not original_item.get("height"):
-                        if self.params["thumbwidth"]:
-                            item["width"] = self.params["thumbwidth"]
-                        if self.params["thumbheight"]:
-                            item["height"] = self.params["thumbheight"]
+                        adjust_thumb_size(item, self.params)
                 if ("popup" in item or item["type"] == "thumbnail") and "rawpath" in item:
                     item["url"] = make_thumbnail(item, orig_path=original_item["url"])
                     if item["type"] != "thumbnail":

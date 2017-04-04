@@ -1,6 +1,20 @@
 from PIL import Image
 import os
 
+
+def adjust_thumb_size(item, params):
+    if params["thumbwidth"]:
+        if not params["thumbheight"]:
+            item["height"] = float(item["height"]) / item["width"] * params["thumbwidth"]
+            item["width"] = params["thumbwidth"]
+        else:
+            item["width"] = params["thumbwidth"]
+            item["height"] = params["thumbheight"]
+    else:
+        item["width"] = float(item["width"]) / item["height"] * params["thumbheight"]
+        item["height"] = params["thumbheight"]
+
+
 def make_thumbnail(item, orig_path=None):
     actual_path = orig_path or item["rawpath"]
     dirname, basename = os.path.split(item["url"])
