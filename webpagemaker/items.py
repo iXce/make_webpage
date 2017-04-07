@@ -15,6 +15,21 @@ def flatten_singletons(l):
     else:
         return [flatten_singletons(v) for v in l]
 
+def simplify_plot(xdata, ydata, tolerance, precision):
+    prev_x = None
+    prev_y = None
+    for (x, y) in zip(xdata, ydata):
+        if prev_x is None or prev_y is None:
+            prev_x = x
+            prev_y = y
+            yield (round(x, precision), round(y, precision))
+        else:
+            dist = ((x - prev_x) ** 2 + (y - prev_y) ** 2) ** 0.5
+            if dist > tolerance:
+                prev_x = x
+                prev_y = y
+                yield (round(x, precision), round(y, precision))
+
 def sanitize_plot(item, params):
     xdata = flatten_singletons(item["xdata"])
     ydata = flatten_singletons(item["ydata"])
@@ -38,8 +53,13 @@ def sanitize_plot(item, params):
     allseries = zip(xdata, ydata)
     data = []
     for k, (xdata, ydata) in enumerate(allseries):
-        entry = {"values": [{"x": xdata[i], "y": ydata[i]}
-                            for i in range(len(xdata))]
+        plotpoints = simplify_plot(xdata, ydata,
+                                   item.get("tolerance", 0.002),
+                                   item.get("precision", 4))
+        plotpoints = list(plotpoints)
+        print(len(xdata), len(plotpoints))
+        entry = {"values": [{"x": x, "y": y}
+                            for x, y in plotpoints]
                 }
         entry["key"] = item["labels"][k] if "labels" in item else "Set %d" % k
         if "colors" in item:
