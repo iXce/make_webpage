@@ -52,6 +52,7 @@
 {% include "webpage_precontent.html" %}
         <table id="maintable">
         {% if page.header %}
+{% do 'itemid'|inc(0, None, True) %}
         <thead>
             <tr>
                 {% for item in page.header %}
@@ -64,6 +65,7 @@
         </thead>
         {% endif %}
         <tbody>
+{% do 'itemid'|inc(0, None, True) %}
         {% for item0 in page.items %}
             <tr>
             {% if item0 is sequence and not item0 is string and not item0 is mapping %}
