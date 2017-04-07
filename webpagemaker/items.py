@@ -66,7 +66,7 @@ def sanitize_plot(item, params):
             entry["color"] = item["colors"][k]
         data.append(entry)
     item["data"] = json.dumps(data)
-    item["tdattrs"] = "class = \"plotholder\" " + item["attrs"] if "attrs" in item else ""
+    item["tdattrs"] = "class = \"plotholder\" " + item.get("tdattrs", "")
     return item
 
 def colorize_heatmap(heatmap, min_val, max_val, colormap):
