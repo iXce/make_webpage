@@ -1,1 +1,1 @@
-<svg {% if item.attrs %}{{ item.attrs }}{% endif %}/>
+<svg {% if item.attrs %}{{ item.attrs }}{% endif %} style="{% if item.width %}width: {{ item.width }}px;{% endif %}{% if item.height %}height: {{ item.height }}px;{% endif %} {{ item.extrastyle }}" />
