@@ -6,7 +6,7 @@
 {% if item.boxes %}
 {% for box in item.boxes %}<div class="bbox"
 	 style="border-color: {{ box.color|default("#bbbbbb") }}; left: {{ box.x0 * 100 }}%; width: {{ box.width * 100 }}%; top: {{ box.y0 * 100 }}%; height: {{ box.height * 100 }}%;"
-	 data-toggle="tooltip" title="{{ "%.02f"|format(box.score) }}">
+     data-toggle="tooltip" title="{% if box.score %}{{ "%.02f"|format(box.score) }}{% endif %}">
 {% if box.score %}<div class="bbox-score" style="color: {{ box.textcolor|default("#fff") }}; background-color: {{ box.textbgcolor|default("rgba(0, 0, 0, 0.6)") }};">{{ "%.02f"|format(box.score) }}</div>{% endif %}
 </div>{% endfor %}
 </div>
