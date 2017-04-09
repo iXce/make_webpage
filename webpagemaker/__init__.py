@@ -1,12 +1,13 @@
 # coding: utf-8
 
-import sys, os
+import sys
+import os
 import shutil
 import math
 import datetime
 import codecs
 
-from jinja2 import Template, Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader
 
 from jinjafilters import inc_filter
 from thumbnail import make_thumbnail, adjust_thumb_size
