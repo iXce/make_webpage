@@ -10,8 +10,7 @@ import codecs
 from jinja2 import Environment, FileSystemLoader
 
 from jinjafilters import inc_filter
-from thumbnail import make_thumbnail, adjust_thumb_size
-from getimageinfo import getImageInfo
+from thumbnail import get_image_size, make_thumbnail, adjust_thumb_size
 from utils import get_file_type, get_mimetype
 from items import item_processors
 
@@ -126,8 +125,8 @@ class WebpageMaker(object):
             if "width" in orig_item: newitem["width"] = orig_item["width"]
             if "height" in orig_item: newitem["height"] = orig_item["height"]
             if newitem["type"] == "image" and ("width" not in newitem or "height" not in newitem):
-                content_type, width, height = getImageInfo(open(item).read())
-                if content_type and width and height:
+                width, height = get_image_size(item)
+                if width and height:
                     try:
                         if "width" not in newitem and "height" not in newitem:
                             newitem["width"] = width
