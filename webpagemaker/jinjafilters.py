@@ -1,8 +1,9 @@
-#coding: utf-8
+# coding: utf-8
 from collections import defaultdict
 
 from jinja2 import environmentfilter
 from jinja2.utils import soft_unicode
+
 
 @environmentfilter
 def inc_filter(env, key, value=1, result='value', reset=False):
@@ -45,13 +46,13 @@ def inc_filter(env, key, value=1, result='value', reset=False):
         return key
     elif result == 'value':
         return env.counters[key]
-    elif result == None:
+    elif result is None:
         return None
     else:
         return soft_unicode('')
 
 
-## Module doctest
+# Module doctest
 if __name__ == '__main__':
     import doctest
     doctest.testmod()

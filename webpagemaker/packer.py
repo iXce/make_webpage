@@ -1,6 +1,7 @@
 from arrange import RectanglePacker
 import sys
 
+
 def get_packable_items(items):
     packable_items = []
     for item in items:
@@ -10,11 +11,16 @@ def get_packable_items(items):
             packable_items.append(item)
     return packable_items
 
+
 def pack_items(items, params):
-    if "pack_width" in params: pack_width = params["pack_width"]
-    else: pack_width = 100000
-    if "pack_height" in params: pack_height = params["pack_height"]
-    else: pack_height = 100000
+    if "pack_width" in params:
+        pack_width = params["pack_width"]
+    else:
+        pack_width = 100000
+    if "pack_height" in params:
+        pack_height = params["pack_height"]
+    else:
+        pack_height = 100000
     packable_items = get_packable_items(items)
     packer = RectanglePacker(pack_width, pack_height)
     packed_items = []
@@ -26,5 +32,6 @@ def pack_items(items, params):
         else:
             item["point"] = point
             packed_items.append(item)
-    if failures > 0: print >> sys.stderr, "Warning: could not pack %d items" % failures
+    if failures > 0:
+        print >> sys.stderr, "Warning: could not pack %d items" % failures
     return packed_items

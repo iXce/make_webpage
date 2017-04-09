@@ -17,6 +17,7 @@ from items import item_processors
 DEBUG = False
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
+
 class Page(object):
     items = None
     parent = None
@@ -36,7 +37,8 @@ class Page(object):
         else:
             return [self]
     breadcrumbs = property(_get_breadcrumbs)
-    
+
+
 def register_type(func):
     def wrapped(self, *args, **kwargs):
         item = func(self, *args, **kwargs)
@@ -45,13 +47,14 @@ def register_type(func):
         return item
     return wrapped
 
+
 class WebpageMaker(object):
     params = None
     items = None
     item_types = {}
     cur_subpage_suffix = 1
 
-    def __init__(self, data, packing = None):
+    def __init__(self, data, packing=None):
         params = data['params']
 
         # Path-related parameters
@@ -103,7 +106,8 @@ class WebpageMaker(object):
             os.makedirs(img_dir)
         static_dir = os.path.join(target_dir, "static")
         if DEBUG or not os.path.isdir(static_dir):
-            if DEBUG and os.path.exists(static_dir): shutil.rmtree(static_dir)
+            if DEBUG and os.path.exists(static_dir):
+                shutil.rmtree(static_dir)
             shutil.copytree(os.path.join(THIS_DIR, "static"), static_dir)
         if 'extraimages' in self.params:
             extra_images = self.params['extraimages']
@@ -113,17 +117,21 @@ class WebpageMaker(object):
             for img in extra_images:
                 new_name = os.path.basename(img)
                 new_path = os.path.join(self.params["target_dir"], "imgs", "extras", new_name)
-                if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(img) > os.path.getmtime(new_path))): shutil.copy(img, new_path)
+                if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(img) > os.path.getmtime(new_path))):
+                    shutil.copy(img, new_path)
 
     @register_type
-    def process_item(self, item, orig_item = None, in_media_item=False):
+    def process_item(self, item, orig_item=None, in_media_item=False):
         if isinstance(item, dict) and "subpage" in item:
             item["subpage"] = self.process_item(item["subpage"])
-        if type(item) in (str,unicode) and os.path.exists(item) and not os.path.isdir(item):
-            if not orig_item: orig_item = {}
+        if type(item) in (str, unicode) and os.path.exists(item) and not os.path.isdir(item):
+            if not orig_item:
+                orig_item = {}
             newitem = {"type": get_file_type(item), "mime": get_mimetype(item)}
-            if "width" in orig_item: newitem["width"] = orig_item["width"]
-            if "height" in orig_item: newitem["height"] = orig_item["height"]
+            if "width" in orig_item:
+                newitem["width"] = orig_item["width"]
+            if "height" in orig_item:
+                newitem["height"] = orig_item["height"]
             if newitem["type"] == "image" and ("width" not in newitem or "height" not in newitem):
                 width, height = get_image_size(item)
                 if width and height:
@@ -153,14 +161,16 @@ class WebpageMaker(object):
                 new_name = item.replace(os.sep, "_")
                 new_path = os.path.join(self.params["target_dir"], "imgs", new_name)
                 if not do_thumbnail and not orig_item.get("type") == "thumbnail":
-                    if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(item) > os.path.getmtime(new_path))): shutil.copy(item, new_path)
+                    if not DEBUG and (not os.path.exists(new_path) or (os.path.getmtime(item) > os.path.getmtime(new_path))):
+                        shutil.copy(item, new_path)
                 newitem["rawpath"] = new_path
                 newitem["url"] = os.path.join("imgs", new_name)
                 if do_thumbnail:
                     newitem["url"] = make_thumbnail(newitem, orig_path=item)
             else:
                 newitem["url"] = item.replace(self.params["target_dir"], "")
-            if "type" in orig_item: newitem["type"] = orig_item["type"]
+            if "type" in orig_item:
+                newitem["type"] = orig_item["type"]
             return newitem
         elif isinstance(item, dict) and "type" in item:
             if item["type"] in ("image", "video", "thumbnail"):
@@ -210,25 +220,29 @@ dict, and possibly copy the file to the target directory"""
         return item, subpage, extra_subpages
 
     def find_subpages(self, items, basename, level, parent):
-        if not isinstance(items, list): items = [items]
+        if not isinstance(items, list):
+            items = [items]
         subpages = []
         for i in xrange(len(items)):
             item = items[i]
             if isinstance(item, dict) and "subpage" in item:
                 item["subpage"], subpage, extra_subpages = self.make_subpage(item["subpage"], 0, basename, parent)
-                if "subpage_title" in item: subpage.title = item["subpage_title"]
-                if "subpage_description" in item: subpage.description = item["subpage_description"]
-                if "subpage_header" in item: subpage.header = item["subpage_header"]
+                if "subpage_title" in item:
+                    subpage.title = item["subpage_title"]
+                if "subpage_description" in item:
+                    subpage.description = item["subpage_description"]
+                if "subpage_header" in item:
+                    subpage.header = item["subpage_header"]
                 subpage.sortable = "subpage_sortable" in item and bool(item["subpage_sortable"])
                 subpages.extend([subpage] + extra_subpages)
             elif isinstance(item, dict) and "type" in item and item["type"] == "stack":
                 item["stack"], extra_subpages = self.find_subpages(item["stack"], basename, level, parent)
                 subpages.extend(extra_subpages)
             elif isinstance(item, list):
-                if level > 0 and level % 2 == 0: # level is even, we have a subpage
+                if level > 0 and level % 2 == 0:  # level is even, we have a subpage
                     item, subpage, extra_subpages = self.make_subpage(item, level, basename, parent)
                     subpages.extend([subpage] + extra_subpages)
-                else: # level is odd, not a subpage, just recurse
+                else:  # level is odd, not a subpage, just recurse
                     item, extra_subpages = self.find_subpages(item, basename, level + 1, parent)
                     subpages.extend(extra_subpages)
             items[i] = item
@@ -236,9 +250,9 @@ dict, and possibly copy the file to the target directory"""
 
     def make_page(self, page):
         print >> sys.stderr, "Rendering", page.path,
-        env = Environment(loader = FileSystemLoader(os.path.join(THIS_DIR, "templates")),
-                          extensions = ['jinja2.ext.with_', 'jinja2.ext.do'],
-                          trim_blocks = True)
+        env = Environment(loader=FileSystemLoader(os.path.join(THIS_DIR, "templates")),
+                          extensions=['jinja2.ext.with_', 'jinja2.ext.do'],
+                          trim_blocks=True)
         env.filters['inc'] = inc_filter
         if self.params['packed']:
             template = env.get_template('webpage_packed.html')
@@ -271,12 +285,13 @@ dict, and possibly copy the file to the target directory"""
                 n_pages = int(math.ceil(float(n_lines - n_header_lines) / n_per_page))
                 paged_format = "%s.paged%08d.html"
                 for i in range(n_pages):
-                    start = n_header_lines+i*n_per_page
-                    page_items = header + items[start:(start+n_per_page)]
-                    prev_paged = paged_format % (basename, i-1) if i > 1 else (basename if i == 1 else None)
-                    next_paged = paged_format % (basename, i+1) if (i+1) < n_pages else None
+                    start = n_header_lines + i * n_per_page
+                    page_items = header + items[start:(start + n_per_page)]
+                    prev_paged = paged_format % (basename, i - 1) if i > 1 else (basename if i == 1 else None)
+                    next_paged = paged_format % (basename, i + 1) if (i + 1) < n_pages else None
                     links = []
-                    if prev_paged: links.append("<a href=\"%s\">&lt;&lt;</a>" % prev_paged)
+                    if prev_paged:
+                        links.append("<a href=\"%s\">&lt;&lt;</a>" % prev_paged)
                     if n_pages > 10:
                         page_range = [0] + range(max(1, i - 4), min(i + 4, n_pages - 1)) + [n_pages - 1]
                     else:
@@ -289,7 +304,8 @@ dict, and possibly copy the file to the target directory"""
                             links.append("<strong>[%d]</strong>" % (k + 1,))
                         else:
                             links.append("<a href=\"%s\">%d</a>" % (k_paged, k + 1))
-                    if next_paged: links.append("<a href=\"%s\">&gt;&gt;</a>" % next_paged)
+                    if next_paged:
+                        links.append("<a href=\"%s\">&gt;&gt;</a>" % next_paged)
                     paginator = "<span class=\"paged_links\">%s</span>" % "".join(links)
                     if i == 0:
                         mainpage.items = page_items
