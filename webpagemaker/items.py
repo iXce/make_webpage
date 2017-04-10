@@ -53,11 +53,11 @@ def sanitize_plot(item, params):
     allseries = zip(xdata, ydata)
     data = []
     for k, (xdata, ydata) in enumerate(allseries):
-        plotpoints = simplify_plot(xdata, ydata,
-                                   item.get("tolerance", 0.002),
-                                   item.get("precision", 4))
+        if not item.get("nosimplify"):
+            plotpoints = simplify_plot(xdata, ydata,
+                                       item.get("tolerance", 0.002),
+                                       item.get("precision", 4))
         plotpoints = list(plotpoints)
-        print(len(xdata), len(plotpoints))
         entry = {"values": [{"x": x, "y": y}
                             for x, y in plotpoints]
                 }
