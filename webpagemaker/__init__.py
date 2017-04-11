@@ -84,6 +84,8 @@ class WebpageMaker(object):
         # Layout-related parameters
         params['sortable'] = bool(params.get('sortable', False))
         params['packed'] = bool(params.get('packed', False))
+        params['smartfluid'] = bool(params.get('smartfluid', False))
+        params['fluid'] = bool(params.get('fluid', False))
         params['header'] = params.get('header', None)
         params['paged'] = params.get('paged', False)
 
@@ -257,6 +259,8 @@ dict, and possibly copy the file to the target directory"""
         env.filters['inc'] = inc_filter
         if self.params['packed']:
             template = env.get_template('webpage_packed.html')
+        elif self.params['fluid'] or self.params['smartfluid']:
+            template = env.get_template('webpage_fluid.html')
         else:
             template = env.get_template('webpage.html')
         target_path = os.path.join(self.params['target_dir'], page.path)

@@ -112,3 +112,17 @@ span.paged_links a, span.paged_links strong, span.paged_links span {
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.classicfluid {
+    max-width: 100%;
+}
+
+.classicfluid .fluiditem {
+    float: left;
+    margin-right: 1px;
+    margin-bottom: 1px;
+}
+
+.paginator {
+    clear: both;
+}

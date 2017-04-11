@@ -1,0 +1,144 @@
+{% extends "webpage_base.html" %}
+
+{% block content %}
+{% if params.smartfluid %}
+    <div class="row fluidwrapper">
+    <div class="fluidcontainer">
+{% else %}
+    <div class="classicfluid">
+{% endif %}
+        {% for item in page.items %}
+        <div class="fluiditem">
+        {% set itemid = 'itemid'|inc %}
+        {% include "item_template.html" %}
+        </div>
+        {% endfor %}
+{% if params.smartfluid %}
+    </div>
+    </div>
+{% else %}
+    </div>
+{% endif %}
+{% endblock %}
+
+
+{% block extrajs %}
+{% if params.smartfluid %}
+    <script type="text/javascript">
+;(function($) {
+  $(function() {
+    'use strict';
+
+    $(window).resize(function() {
+      if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
+      this.resizeTimeout = setTimeout(function() {
+        $(this).trigger('resizeEnd');
+      }, 250);
+    });
+
+    function fluid_get_height(images, width, margin) {
+      width -= (images.length - 1) * margin;
+      var h = 0;
+      for (var i = 0; i < images.length; ++i) {
+        h += $(images[i]).data('width') / $(images[i]).data('height');
+      }
+      return width / h;
+    }
+
+    function round(val, digits) {
+      var factor = Math.pow(10, digits);
+      return Math.round(val * factor) / factor;
+    }
+
+    function fluid_set_height(images, height, line_start, options) {
+      var total_width = 0;
+      var widths = [];
+      for (var i = 0; i < images.length; ++i) {
+        var width = Math.round(height * $(images[i]).data('width') / $(images[i]).data('height'));
+        widths[i] = width;
+        total_width += width;
+      }
+      var left = 0;
+      var images_count = images.length;
+      var margin_remaining = options['target_width'] - total_width;
+      if (margin_remaining / images_count > 2 * options['margin']) {
+        margin_remaining = images_count * options['margin'];
+      }
+      for (var i = 0; i < images_count; ++i) {
+        var width = widths[i];
+        var remaining = images_count - i - 1;
+        if (remaining == 0 && Math.abs(((left + width) - options['target_width'])) < 2 * options['margin']) {
+          left = options['target_width'] - width;
+        }
+        $(images[i]).parents(".viewer-pic-holder").css({
+          width: width,
+          height: height,
+          top: round(line_start, 2),
+          left: left
+        });
+        if (remaining > 0) {
+          var margin = Math.round(margin_remaining / remaining);
+          margin_remaining -= margin;
+          left += width + margin;
+        }
+      }
+    }
+
+    $.fn.fluid_layout = function(opt) {
+      var defaults = {
+        target_width: 1000,
+        target_height: 250,
+        margin: 2
+      };
+      var options = $.extend(defaults, opt);
+      var line, line_height, images = $(this), line_start = 2;
+      while (images.length > 0) {
+        for (var i = 1; i < images.length + 1; ++i) {
+          line = images.slice(0, i);
+          line_height = fluid_get_height(line, options['target_width'], options['margin']);
+          line_height = Math.round(line_height);
+          if (line_height < options['target_height']) {
+            fluid_set_height(line, line_height, line_start, options);
+            images = images.slice(i);
+            line = [];
+            line_start += line_height + options['margin'];
+            break;
+          }
+        }
+        if (line.length > 0) {
+          line_height = Math.min(options['target_height'], line_height);
+          fluid_set_height(line, line_height, line_start, options);
+          line_start += line_height + options['margin'];
+          break;
+        }
+      }
+      return line_start;
+    }
+
+    var old_width = undefined;
+    var resize_gallery = function() {
+      var options = {
+        target_width: $(".fluidwrapper")[0].clientWidth - 2,
+        target_height: 200,
+        margin: 2
+      };
+      var pics_height = $(".fluidwrapper img").fluid_layout(options);
+      $(".fluidwrapper").css({'height': ''});
+      $(".fluidcontainer").css({'display': 'block',
+                                     'width': options['target_width'],
+                                     'height': pics_height
+                                     });
+    };
+    resize_gallery();
+    $(window).bind('resizeEnd', function(ev) {
+      var width =  $(".fluidcontainer")[0].clientWidth;
+      if (width != old_width) {
+        old_width = width;
+        resize_gallery();
+      }
+    });
+  });
+})(jQuery);
+    </script>
+{% endif %}
+{% endblock %}
