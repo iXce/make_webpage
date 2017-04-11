@@ -84,6 +84,7 @@ class WebpageMaker(object):
         # Layout-related parameters
         params['sortable'] = bool(params.get('sortable', False))
         params['packed'] = bool(params.get('packed', False))
+        params['header'] = params.get('header', None)
         params['paged'] = params.get('paged', False)
 
         # Description-related parameters
@@ -274,7 +275,7 @@ dict, and possibly copy the file to the target directory"""
         mainpage.title = self.params["title"]
         mainpage.description = self.params["description"]
         mainpage.sortable = self.params["sortable"]
-        mainpage.header = self.params["header"] if "header" in self.params else None
+        mainpage.header = self.params["header"]
         if self.params['paged']:
             n_per_page = self.params['paged']
             n_header_lines = self.params['header_lines'] if 'header_lines' in self.params else 0
