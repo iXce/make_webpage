@@ -1,55 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>{% if page.title %}{{ page.title }}{% else %}Visualization webpage{% endif %}{% if page.parent and params.title %} / {{ params.title }}{% endif %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ currentdate }}">
-    <meta name="author" content="">
+{% extends "webpage_base.html" %}
 
-    <!-- Le styles -->
-{% include "webpage_css.html" %}
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-
-  <body>
-
-    {% if page.title %}
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <a class="navbar-brand navbar-left" href="{% if params.home_url %}{{ params.home_url }}{% else %}{{ params.target_url }}{% endif %}">{% if page.parent and params.title %}{{ params.title }} : {% endif %}{{ page.title }}</a>
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="container-fluid" id="main-container">
-{% if page.parent %}
-    <ul class="breadcrumb">
-{% for breadcrumb in page.breadcrumbs %}
-{% if not loop.last %}
-        <li><a href="{{ breadcrumb.path }}">{% if breadcrumb.title %}{{ breadcrumb.title }}{% else %}{{ breadcrumb.path }}{% endif %}</a></li>
-{% else %}
-        <li class="active">{% if breadcrumb.title %}{{ breadcrumb.title }}{% else %}{{ breadcrumb.path }}{% endif %}</li>
-{% endif %}
-{% endfor %}
-    </ul>
-{% endif %}
-
-      {% if page.description %}
-      <p>{{ page.description }}</p>
-      {% endif %}
-
-    <div class="row-fluid" id="main-row">
-{% include "webpage_precontent.html" %}
+{% block content %}
         <table id="maintable">
         {% if page.header %}
 {% do 'itemid'|inc(0, None, True) %}
@@ -87,15 +38,4 @@
         {% endfor %}
         </tbody>
         </table>
-{% include "webpage_postcontent.html" %}
-    </div>
-
-    </div> <!-- /container -->
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-{% include "webpage_js.html" %}
-  </body>
-</html>
-
+{% endblock %}
