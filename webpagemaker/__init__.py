@@ -313,6 +313,7 @@ dict, and possibly copy the file to the target directory"""
                     else:
                         pagedpage = Page(paged_format % (basename, i), None)
                         pagedpage.items = page_items
+                        pagedpage.header = self.params["header"]
                         pagedpage.title = self.params["title"]
                         pagedpage.description = self.params["description"]
                         pagedpage.sortable = self.params["sortable"]
